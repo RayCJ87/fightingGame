@@ -1,0 +1,379 @@
+/**
+ * @author      Shawn Hymel <@ShawnHymel>
+ * @copyright   2016 Shawn Hymel
+ * @license     {@link http://choosealicense.com/licenses/no-license/|No License}
+ * @description This example demonstrates the VirtualGamepad plugin.
+ */
+var VirtualGamepad = (function (Phaser) {
+    'use strict';
+
+    // Static variables
+    var UP_LOWER_BOUND = -7 * (Math.PI / 8);
+    var UP_UPPER_BOUND = -1 * (Math.PI / 8);
+    var DOWN_LOWER_BOUND = Math.PI / 8;
+    var DOWN_UPPER_BOUND = 7 * (Math.PI / 8);
+    var RIGHT_LOWER_BOUND = -3 * (Math.PI / 8);
+    var RIGHT_UPPER_BOUND = 3 * (Math.PI / 8);
+    var LEFT_LOWER_BOUND = 5 * (Math.PI / 8);
+    var LEFT_UPPER_BOUND = -5 * (Math.PI / 8);
+
+    /**
+     * The Virtual Gamepad adds a thumbstick and button(s) to mobile devices.
+     *
+     * @class Phaser.Plugin.VirtualGamepad
+     * @constructor
+     * @param {Object} game - The main Game object
+     * @param {Any} parent - Object that owns this plugin (e.g. Phaser.PluginManager)
+     */
+    Phaser.Plugin.VirtualGamepad = function (game, parent) {
+
+        // Call parent
+        Phaser.Plugin.call(this, game, parent);
+
+        // Class members
+        this.input = this.game.input;
+        this.joystick = null;
+        this.joystickPad = null;
+        this.joystickPoint = null;
+        this.joystickRadius = null;
+        this.joystickPointer = null;
+        this.button = null;
+        this.buttonPoint = null;
+        this.buttonRadius = null;
+
+        // Polling for the joystick and button pushes
+        this.preUpdate = gamepadPoll.bind(this);
+    };
+
+    Phaser.Plugin.VirtualGamepad.prototype =
+        Object.create(Phaser.Plugin.prototype);
+    Phaser.Plugin.VirtualGamepad.prototype.constructor =
+        Phaser.Plugin.VirtualGamepad;
+
+    /**
+     * Add a joystick to the screen (only one joystick allowed for now)
+     *
+     * @method Phaser.Plugin.VirtualGamepad#addJoystick
+     * @param {number} x - Position (x-axis) of the joystick on the canvas
+     * @param {number} y - Position (y-axis) of the joystick on the canvas
+     * @param {number} scale - Size of the sprite. 1.0 is 100x100 pixels
+     * @param {String} key - key for the gamepad's spritesheet
+     * @param {Phaser.Sprite} The joystick object just created
+     */
+    Phaser.Plugin.VirtualGamepad.prototype.addJoystick = function(x,
+                                                                  y,
+                                                                  scale,
+                                                                  key) {
+
+        // If we already have a joystick, return null
+        if (this.joystick !== null) {
+            return null;
+        }
+
+        // Add the joystick to the game
+        this.joystick = this.game.add.sprite(x, y, key);
+        this.joystick.frame = 2;
+        this.joystick.anchor.set(0.5);
+        this.joystick.fixedToCamera = true;
+        this.joystick.scale.setTo(scale, scale);
+        this.joystickPad = this.game.add.sprite(x, y, key);
+        this.joystickPad.frame = 3;
+        this.joystickPad.anchor.set(0.5);
+        this.joystickPad.fixedToCamera = true;
+        this.joystickPad.scale.setTo(scale, scale);
+
+        // Remember the coordinates of the joystick
+        this.joystickPoint = new Phaser.Point(x, y);
+
+        // Set up initial joystick properties
+        this.joystick.properties = {
+            inUse: false,
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            x: 0,
+            y: 0,
+            distance: 0,
+            angle: 0,
+            rotation: 0
+        };
+
+        // Set the touch area as defined by the button's radius
+        this.joystickRadius = scale * (this.joystick.width / 2);
+
+        return this.joystick;
+    };
+
+    /**
+     * Add a button to the screen (only one button allowed for now)
+     *
+     * @method Phaser.Plugin.VirtualGamepad#addButton
+     * @param {number} x - Position (x-axis) of the button on the canvas
+     * @param {number} y - Position (y-axis) of the button on the canvas
+     * @param {number} scale - Size of the sprite. 1.0 is 100x100 pixels
+     * @param {String} key - key for the gamepad's spritesheet
+     * @param {Phaser.Button} The button object just created
+     */
+    Phaser.Plugin.VirtualGamepad.prototype.addButton = function(x,
+                                                                y,
+                                                                scale,
+                                                                key) {
+
+        // If we already have a button, return null
+        if (this.button !== null) {
+            return null;
+        }
+
+        // Add the button to the game
+        this.button = this.game.add.button(x, y, key, null, this);
+        this.button.anchor.set(0.5);
+        this.button.fixedToCamera = true;
+        this.button.scale.setTo(scale, scale);
+
+        // Remember the coordinates of the button
+        this.buttonPoint = new Phaser.Point(x, y);
+
+        // Set up initial button state
+        this.button.isDown = false;
+
+        // Set the touch area as defined by the button's radius
+        this.buttonRadius = scale * (this.button.width / 2);
+
+        return this.button;
+    };
+
+    var buttonDown = function() {
+        this.button.isDown = true;
+    };
+
+    var buttonUp = function() {
+        this.button.isDown = false;
+    };
+
+    var gamepadPoll = function() {
+
+        var resetJoystick = true;
+
+        // See if any pointers are in range of the joystick or buttons
+        this.button.isDown = false;
+        this.button.frame = 0;
+        this.game.input.pointers.forEach(function(p) {
+            resetJoystick = testDistance(p, this);
+        }, this);
+
+        // See if the mouse pointer is in range of the joystick or buttons
+        resetJoystick = testDistance(this.game.input.mousePointer, this);
+
+        // If the pointer is removed, reset the joystick
+        if (resetJoystick) {
+            if ((this.joystickPointer === null) ||
+                (this.joystickPointer.isUp)) {
+                moveJoystick(this.joystickPoint, this);
+                this.joystick.properties.inUse = false;
+                this.joystickPointer = null;
+            }
+        }
+
+    };
+
+    var testDistance = function(pointer, that) {
+
+        var reset = true;
+
+        // See if the pointer is over the joystick
+        var d = that.joystickPoint.distance(pointer.position);
+        if ((pointer.isDown) && ((pointer === that.joystickPointer) ||
+            (d < that.joystickRadius))) {
+            reset = false;
+            that.joystick.properties.inUse = true;
+            that.joystickPointer = pointer;
+            moveJoystick(pointer.position, that);
+        }
+
+        // See if the pointer is over the button
+        d = that.buttonPoint.distance(pointer.position);
+        if ((pointer.isDown) && (d < that.buttonRadius)) {
+            that.button.isDown = true;
+            that.button.frame = 1;
+        }
+
+        return reset;
+    };
+
+    var moveJoystick = function(point, that) {
+
+        // Calculate x/y of pointer from joystick center
+        var deltaX = point.x - that.joystickPoint.x;
+        var deltaY = point.y - that.joystickPoint.y;
+
+        // Get the angle (radians) of the pointer on the joystick
+        var rotation = that.joystickPoint.angle(point);
+
+        // Set bounds on joystick pad
+        if (that.joystickPoint.distance(point) > that.joystickRadius) {
+            deltaX = (deltaX === 0) ?
+                0 : Math.cos(rotation) * that.joystickRadius;
+            deltaY = (deltaY === 0) ?
+                0 : Math.sin(rotation) * that.joystickRadius;
+        }
+
+        // Normalize x/y
+        that.joystick.properties.x = parseInt((deltaX /
+            that.joystickRadius) * 100, 10);
+        that.joystick.properties.y = parseInt((deltaY  /
+            that.joystickRadius) * 100, 10);
+
+        // Set polar coordinates
+        that.joystick.properties.rotation = rotation;
+        that.joystick.properties.angle = (180 / Math.PI) * rotation;
+        that.joystick.properties.distance =
+            parseInt((that.joystickPoint.distance(point) /
+            that.joystickRadius) * 100, 10);
+
+        // Set d-pad directions
+        that.joystick.properties.up = ((rotation > UP_LOWER_BOUND) &&
+            (rotation <= UP_UPPER_BOUND));
+        that.joystick.properties.down = ((rotation > DOWN_LOWER_BOUND) &&
+            (rotation <= DOWN_UPPER_BOUND));
+        that.joystick.properties.right = ((rotation > RIGHT_LOWER_BOUND) &&
+            (rotation <= RIGHT_UPPER_BOUND));
+        that.joystick.properties.left = ((rotation > LEFT_LOWER_BOUND) ||
+            (rotation <= LEFT_UPPER_BOUND));
+
+        // Fix situation where left/right is true if X/Y is centered
+        if ((that.joystick.properties.x === 0) &&
+            (that.joystick.properties.y === 0)) {
+            that.joystick.properties.right = false;
+            that.joystick.properties.left = false;
+        }
+
+        // Move joystick pad images
+        that.joystickPad.cameraOffset.x = that.joystickPoint.x + deltaX;
+        that.joystickPad.cameraOffset.y = that.joystickPoint.y + deltaY;
+    };
+
+} (Phaser));
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO);
+
+var PhaserGame = function() {
+    this.player = null;
+}
+var map;
+var layer;
+var player;
+
+PhaserGame.prototype = {
+
+
+    preload: function() {
+
+        // Load the gamepad spritesheet. Note that the width must equal height
+        // of the sprite.
+        this.load.spritesheet('gamepad','assets/gamepad_spritesheet.png', 100, 100);
+
+        this.load.spritesheet('buttonB','assets/button-diagonal.png',125,125);
+        this.load.image('laser', 'assets/laser.png');
+
+
+        this.load.spritesheet('mario', 'assets/mariospritesheet-small.png',50,50); // key, sourcefile, framesize x, framesize y
+        this.load.tilemap('map','assets/livel1.csv');
+        this.load.image('tiles','assets/tileset.png');
+    },
+
+    create: function() {
+//---------------------
+        this.stage.backgroundColor = '#3A5963';
+        map = game.add.tilemap('map', 64, 64);
+        map.addTilesetImage('tiles');
+        layer = map.createLayer(0);
+        layer.resizeWorld();
+
+       // this.player.body.collideWorldBounds = true;
+
+//---------------------
+        game.renderer.roundPixels = true;
+
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+		this.scale.pageAlignHorizontally = true;
+		this.scale.pageAlignVertically = true;
+
+        this.physics.startSystem(Phaser.Physics.ARCADE);
+
+
+
+        this.lasers = game.add.group();
+        this.lasers.enableBody = true;
+        this.lasers.physicsBodyType = Phaser.Physics.ARCADE;
+
+        this.lasers.createMultiple(40, 'laser');
+        this.lasers.setAll('scale.x', 0.5);
+        this.lasers.setAll('scale.y', 0.5);
+        this.lasers.setAll('anchor.x', 0.5);
+        this.lasers.setAll('anchor.y', 0.5);
+
+        this.laserTime = 0;
+
+        this.player = this.add.sprite(250, 250, 'mario');
+        this.player.scale.setTo(0.8, 0.8);
+        this.player.anchor.set(0.5);
+
+        game.physics.arcade.enable(this.player);
+        this.player.body.drag.set(100);
+        this.player.body.maxVelocity.set(300);
+        this.player.lastAngle = -90;
+
+
+
+
+
+        // Add the VirtualGamepad plugin to the game
+        this.gamepad = this.game.plugins.add(Phaser.Plugin.VirtualGamepad);
+
+        // Add a joystick to the game (only one is allowed right now)
+        this.joystick = this.gamepad.addJoystick(300, 420, 1.0, 'gamepad');
+
+        // Add a button to the game (only one is allowed right now)
+        this.buttonA = this.gamepad.addButton(400, 420, 1.0, 'gamepad');
+        this.buttonB = game.add.button(600, 360, 'buttonB', null, this, 0, 1, 0, 1);
+
+
+    },
+
+    update: function() {
+       // this.physics.arcade.collide(player,layer)
+
+
+        this.player.body.acceleration.x =1.1*this.joystick.properties.x;
+        this.player.body.acceleration.y = 1.1*this.joystick.properties.y;
+
+        // Fire the lasers!
+        if (this.buttonA.isDown) {
+            this.fireLaser();
+        }
+
+
+    },
+
+    fireLaser: function() {
+        if (game.time.now > this.laserTime) {
+            this.laser = this.lasers.getFirstExists(false);
+            if (this.laser) {
+                this.laser.reset(this.player.body.x + 20,
+                    this.player.body.y + 12);
+                this.laser.lifespan = 2000;
+                this.laser.angle = this.player.angle;
+                game.physics.arcade.velocityFromRotation(this.player.rotation,
+                    400, this.laser.body.velocity);
+                this.laserTime = game.time.now + 100;
+            }
+        }
+    },
+
+
+
+
+};
+
+game.state.add('Game', PhaserGame, true);

@@ -1,0 +1,42 @@
+<head>
+      <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+
+</head>
+
+
+<section class="welcome-player">
+
+<h1 class="game-title">Welcome to the King of Bartenders!</h1>
+<p>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Join
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    <span class="join-message">Please input your name and email address.</span>
+    <div class="user-input">
+      <!-- <form> -->
+        <%= form_for :player, url: players_path do |f| %>
+            Name: <%= f.text_field :name %>
+            Email: <%= f.text_field :email %>
+            <!-- submit button - ("Play"), after click- save the data to pg and link to controller page with correct params id. -->
+            <%= f.submit "PLAY" %>
+        <% end %>
+      <!-- </form> -->
+    </div>
+  </div>
+</div>
+
+</section>
+

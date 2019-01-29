@@ -7,6 +7,6 @@ Rails.application.routes.draw do
   # welcome page for mobile devices
   resources :welcome, only: [:index, :show]
   # controller pages for players
-  resources :players, only: [:show]
+  resources :players, only: [:show, :create]
 
 end
