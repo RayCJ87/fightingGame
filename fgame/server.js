@@ -13,7 +13,7 @@ app.use(express.static(__dirname + '/public'));
 
 app.get("/", (req, res) => {
   // res.send("Hello!");
-  res.send("Let's play games!")
+  res.sendFile(__dirname+ '/views/index.html');
 });
 
 app.get("/welcome", (req, res) => {
@@ -37,6 +37,11 @@ app.get("/playerplay", (req, res) => {
 // Add the websocket handler
 io.on('connection', function(socket) {
 
+  //listening events
+  socket.on('userInput', function(data) {
+    socket.broadcast.emit('fromUser',  {input: data} )
+    // console.log("Received:   ", );
+  })
   //update all status to the game
   socket.emit();
 
@@ -45,6 +50,6 @@ io.on('connection', function(socket) {
 });
 
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
