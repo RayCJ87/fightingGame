@@ -1,29 +1,18 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
-
-    <!-- Set up page info -->
-    <meta charset="utf-8" />
-    <title>VirtualGamepad Demo</title>
-    <meta name="description" content="VirtualGamepad" />
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #000000;
+  <title>Phaser Fighting Game</title>
+  <script src="/scripts/phaser.js"></script>
+      <script src="/scripts/main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <style>
+        canvas {
+            margin: 0 auto;
         }
     </style>
-
-    <!-- Load libraries and game states -->
-    <script src="/scripts/phaser.js"></script>
-    <script src="/scripts/phaser-plugin-virtual-gamepad.js"></script>
-
 </head>
-
 <body>
-
-    <!-- Execution starts here -->
-    <script src="/scripts/start.js"></script>
+    <div id="game"></div>
 
 </body>
 </html>
