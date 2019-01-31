@@ -3,15 +3,16 @@
 var game = new Phaser.Game(1400, 800, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update:update,render:render });
 var socket = io();
 
-var userInput = '';
+var userInput = {up: false, down: false, left: false, right: false, fire: false, punch: false};
 
 var punch = false;
 var fire = false;
-var left=false;
-var right=false;
-var duck= false;
-var fire=false;
-var jump=false;
+var left = false;
+var right = false;
+var duck = false;
+var fire = false;
+var jump = false;
+var id = document.getElementById('userID').innerText;
 
 function preload() {
 
@@ -46,8 +47,8 @@ function preload() {
     buttonB = game.add.button(1100, 300, 'buttonB', null, this, 0, 1, 0, 1);  //game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame
     buttonB.fixedToCamera = true;  //our buttons should stay on the same place
     buttonB.events.onInputOver.add(function(){punch=true;});
-    buttonB.events.onInputOut.add(function(){punch=false;});
     buttonB.events.onInputDown.add(function(){punch=true;});
+    buttonB.events.onInputOut.add(function(){punch=false;});
     buttonB.events.onInputUp.add(function(){punch=false;});
 
     buttonA = game.add.button(900, 500, 'buttonA', null, this, 0, 1, 0, 1);
@@ -63,7 +64,6 @@ function preload() {
     buttonleft.events.onInputOut.add(function(){left=false;});
     buttonleft.events.onInputDown.add(function(){left=true;});
     buttonleft.events.onInputUp.add(function(){left=false;});
-
 
 
     buttonright = game.add.button(436, 300, 'buttonright', null, this, 0, 1, 0, 1);
@@ -94,40 +94,57 @@ function preload() {
 
 function update() {
 
-    if (left && !duck) {
-        userInput = 'left';
+    if (left && fire) {
+        userInput = {up: false, down: false, left: true, right: false, fire: true, punch: false};
             // player.scale.x = -1;
             // player.body.moveLeft(500);
             // player.animations.play('walk');
-            socket.emit('userInput', userInput)
+            // socket.emit('userInput', userInput)
            console.log("Ready to send ", userInput);
     }
-    else if (right && !duck) {
-        userInput = 'right';
+    else if (left && punch) {
+        userInput = {up: false, down: false, left: true, right: false, fire: false, punch: true};
+            // player.scale.x = -1;
+            // player.body.moveLeft(500);
+            // player.animations.play('walk');
+            // socket.emit('userInput', userInput)
+           console.log("Ready to send ", userInput);
+    }
+    else if (left && !fire && !punch) {
+        userInput = {up: false, down: false, left: true, right: false, fire: false, punch: false};
+        console.log("The left--->", buttonleft.events.onInputOver)
+            // player.scale.x = -1;
+            // player.body.moveLeft(500);
+            // player.animations.play('walk');
+            // socket.emit('userInput', userInput)
+           console.log("Ready to send ", userInput);
+    }
+    else if (right && !fire && !punch) {
+        userInput.right = true;
         // player.scale.x = 1;
         // player.body.moveRight(500);
         // player.animations.play('walk');
-        socket.emit('userInput', userInput)
+        // socket.emit('userInput', userInput)
        console.log("Ready to send ", userInput);
     }
     else if (duck && !left && !right) {
-        userInput = 'duck';
-        socket.emit('userInput', userInput)
+        userInput.down = true;
+        // socket.emit('userInput', userInput)
        console.log("Ready to send ", userInput);
         // player.body.velocity.x=0;
         // player.animations.play('duck');
     }
     else if (fire) {
-        userInput = 'fire';
-        socket.emit('userInput', userInput)
+        userInput.fire = true;
+        // socket.emit('userInput', userInput)
        console.log("Ready to send ", userInput);
         // player.scale.x = 1;
         // player.body.moveRight(200);
         // player.animations.play('duckwalk');
     }
     else if (jump) {
-        userInput = 'jump'
-        socket.emit('userInput', userInput)
+        userInput.up = true;
+        // socket.emit('userInput', userInput)
        console.log("Ready to send ", userInput);
         // userInput = 'left';
         // player.scale.x = -1;
@@ -135,12 +152,21 @@ function update() {
         // player.animations.play('duckwalk');
     }
     else if (punch) {
-        userInput = 'punch'
-        socket.emit('userInput', userInput)
-       console.log("Ready to send ", userInput);
-    }
+        userInput.punch = true;
+        // socket.emit('userInput', userInput)
 
-    userInput = '';
+       console.log("Ready to send ", userInput);
+
+    }
+    var userAction = {};
+    userAction[id] = userInput;
+    console.log("the controller id: ", document.getElementById('userID').innerText)
+    socket.emit('userInput', userAction)
+
+
+    userInput = {up: false, down: false, left: false, right: false, fire: false, punch: false};
+
+
     // if (jump){ jump_now(); player.loadTexture('mario', 5);}  //change to another frame of the spritesheet
     // if (fire){fire_now(); player.loadTexture('mario', 8); }
     // if (duck){ player.body.setCircle(16,0,6);}else{ player.body.setCircle(22);}  //when ducking create a smaller hitarea - (radius,offsetx,offsety)

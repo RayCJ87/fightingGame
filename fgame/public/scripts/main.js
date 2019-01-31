@@ -7,14 +7,19 @@ var player2;
 var cursors;
 var currentHealthStatus;
 var platforms;
-
+  playerSpeed = 400
 var socket = io();
-var action = '';
-
+var action = {};
+var id;
+var totalPlayer = [player, player2]
 
 socket.on('fromUser', function(data){
   console.log("Game received action: ", data)
-  action = data.input;
+
+  id = Object.keys(data)[0];
+  action = data[id];
+  console.log("The id of user : ", id);
+  console.log("the action : ---> ", action)
 })
 
 var PlayState = {
@@ -23,8 +28,10 @@ init: function(){
   this.input.maxPointers =1;
   this.stage.disableVisibilityChange = true;
 
-  const enable_gravity = 1200;
+  const enable_gravity = 3200;
   this.game.physics.arcade.gravity.y = enable_gravity;
+
+  this.game.physics.arcade.OVERLAP_BIAS = 20
 },
 
 render: function(){
@@ -75,6 +82,7 @@ preload: function(){
   this.game.load.image('bullet2', 'assets/bullet.png')
   // this.load.spritesheet('player','assets/player.png',24,26)
   this.load.spritesheet('player','assets/dino_red.png',24,24)
+  // this.load.spritesheet('player','assets/dino_red_flipped.png',24,24)
   this.load.spritesheet('test','assets/dino_green.png', 24, 24)
   this.game.load.image('health_green', 'assets/health_green.png')
   this.game.load.image('health_red', 'assets/health_red.png')
@@ -84,6 +92,18 @@ preload: function(){
 },
 
 create: function(){
+
+  //total time until trigger
+        // this.timeInSeconds = 100;
+        //make a text field
+        this.timeText = this.add.text(640, 25, "0:00");
+        //turn the text white
+        this.timeText.fill = "#ffffff";
+        //center the text
+        this.timeText.anchor.set(0.5, 0.5);
+        //set up a loop timer
+        this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.tick, this);
+
 
   groupPlatform = this.game.add.group()
 
@@ -209,8 +229,9 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   player.anchor.setTo(0.5,0.5);
   player.scale.setTo(4,4)
   player.animations.add('walking', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 9, true);
-  player.animations.add('attack', [17,18,19,20,21,22,23, 0],7,true)
+  // player.animations.add('attack', [17,18,19,20,21,22,23, 0],7,true)
   player.animations.add('attack', [17, 0],7,false)
+  player.animations.add('death', [15, 14, 16, 15],4,false)
   player.health = 100
   player.maxhealth = 100
 
@@ -218,7 +239,8 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   player2.anchor.setTo(0.5,0.5);
   player2.scale.setTo(4,4)
   player2.animations.add('walking2', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 24, false);
-  player2.animations.add('attack2', [17,18,19,20,21,22,23, 0],7,false)
+  // player2.animations.add('attack2', [17,18,19,20,21,22,23, 0],7,false)
+  player2.animations.add('death', [15, 14, 16, 15],4,false)
   player2.health = 100
   player2.maxhealth = 100
 
@@ -245,8 +267,6 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   currentHealthStatus.fixedToCamera = true
   var healthText = this.game.add.text(210, 20, 'P2 Health', {fontSize: '20px', fill: '#ffffff'})
   healthText.fixedToCamera = true
-
-
 
 
   cursors = this.input.keyboard.createCursorKeys()
@@ -284,93 +304,122 @@ update: function(){
   this.physics.arcade.collide(player2,layer)
 
   player.body.velocity.x = 0;
-  player.body.velocity.y = 0;
+  // player.body.velocity.y = 0;
 
   player2.body.velocity.x = 0;
-  player2.body.velocity.y = 0;
+  // player2.body.velocity.y = 0;
 
   player.body.setSize(15,15,7, 7)
   player2.body.setSize(15,15,7, 7)
 
-    if (action == 'left'){
-       player.body.velocity.x = -250;
-       player.play('walking')
-       // bullet.fireAngle = 180
-       bullet.fireAngle = Phaser.ANGLE_LEFT
-       // bullet.fireAngle = 0
-       action = '';
+
+  if (id == '1') {
+    if (action.left == true){
+     player.body.velocity.x = -playerSpeed;
+     player.scale.setTo(-4, 4);
+     player.play('walking')
+     // bullet.fireAngle = 180
+     bullet.fireAngle = Phaser.ANGLE_LEFT
+
      }
-    if (action == 'right'){
-       player.body.velocity.x = 250
+    if (action.right == true){
+       player.body.velocity.x = playerSpeed
+       player.scale.setTo(4, 4)
        player.play('walking')
        // bullet.fireAngle = 0
+       // player.scale.x *= 1
        bullet.fireAngle = Phaser.ANGLE_RIGHT
-       // bullet.fireAngle = 180
-       action = '';
      }
-    if (action == 'jump'){
-       player.body.velocity.y = -250;
-       player.play('walking')
-       // bullet.fireAngle = -90
-       bullet.fireAngle = Phaser.ANGLE_UP
-       // bullet.fireAngle = 90
-       action = '';
+    if (action.up == true){
+      player.play('walking')
+      const JUMP_SPEED = 1500;
+      let canJump = player.body.touching.down;
+
+      if (canJump) {
+          player.body.velocity.y = -JUMP_SPEED;
+      }
+
+      return canJump;
      }
-     if (action == 'duck'){
-       player.body.velocity.y = 250;
-       player.play('walking')
-       // bullet.fireAngle = 90
-       bullet.fireAngle = Phaser.ANGLE_DOWN
-       // bullet.fireAngle = -90
-       action = '';
-     }
-     if (action == 'fire'){
+     if (action.fire == true){
       bullet.fire()
-      action = '';
+      // action.fire = false;
      }
-     if (action == 'punch'){
+     if (action.punch == true){
       player.play('attack')
       this.playerMelee(player2)
-      action = '';
+      // action.punch = false;
      }
+    }
 
+    if (id == '2'){
+      if (action.left = true){
+         player2.body.velocity.x = -playerSpeed;;
+         player2.scale.setTo(-4, 4)
+         player2.play('walking2')
+         bullet2.fireAngle = Phaser.ANGLE_LEFT
+       }
+      if (action.right == true){
+         player2.body.velocity.x = playerSpeed
+         player.scale.setTo(4, 4)
+         player2.play('walking2')
+         bullet2.fireAngle = Phaser.ANGLE_RIGHT
+       }
+      if (action.up == true){
+         player2.play('walking2')
+         const JUMP_SPEED = 1500;
+         let canJump = player2.body.touching.down;
+         if (canJump) {
+            player2.body.velocity.y = -JUMP_SPEED;
+        }
+        return canJump;
+       }
 
+       // if (sKey.isDown){
+       //   player2.body.velocity.y = 250;
+       //   player2.play('walking2')
+       //   bullet2.fireAngle = Phaser.ANGLE_DOWN
+       // }
+       if (action.fire == true){
+        bullet2.fire()
+       }
 
-    if (aKey.isDown){
-       player2.body.velocity.x = -250;
-       player2.play('walking2')
-       bullet2.fireAngle = Phaser.ANGLE_LEFT
-     }
-    if (dKey.isDown){
-       player2.body.velocity.x = 250
-       player2.play('walking2')
-       bullet2.fireAngle = Phaser.ANGLE_RIGHT
-     }
-    if (wKey.isDown){
-       player2.body.velocity.y = -250;
-       player2.play('walking2')
-       bullet2.fireAngle = Phaser.ANGLE_UP
-     }
-     if (sKey.isDown){
-       player2.body.velocity.y = 250;
-       player2.play('walking2')
-       bullet2.fireAngle = Phaser.ANGLE_DOWN
-     }
-     if (fireButton2.isDown){
-      bullet2.fire()
-     }
+    }
+    // if (aKey.isDown){
+    //    player2.body.velocity.x = -250;
+    //    player2.play('walking2')
+    //    bullet2.fireAngle = Phaser.ANGLE_LEFT
+    //  }
+    // if (dKey.isDown){
+    //    player2.body.velocity.x = 250
+    //    player2.play('walking2')
+    //    bullet2.fireAngle = Phaser.ANGLE_RIGHT
+    //  }
+    // if (wKey.isDown){
+    //    player2.body.velocity.y = -250;
+    //    player2.play('walking2')
+    //    bullet2.fireAngle = Phaser.ANGLE_UP
+    //  }
+    //  if (sKey.isDown){
+    //    player2.body.velocity.y = 250;
+    //    player2.play('walking2')
+    //    bullet2.fireAngle = Phaser.ANGLE_DOWN
+    //  }
+    //  if (fireButton2.isDown){
+    //   bullet2.fire()
+    //  }
 
     this.handleCollisions()
   },
 
-  handleCollisions: function(){
+handleCollisions: function(){
   this.game.physics.arcade.collide(player, player2)
 
 },
 
 handlePlatformCollisions: function(){
   this.game.physics.arcade.collide(player, groupPlatform)
-  this.game.physics.arcade.collide(player2, groupPlatform)
+  // this.game.physics.arcade.collide(player2, groupPlatform)
 },
 
 handlePlatformCollisions2: function(){
@@ -394,6 +443,10 @@ playerHit: function(enemyPlayer, bullet){
   this.player2AnimatedHealthBar()
   console.log(enemyPlayer.health)
 
+  if (enemyPlayer.health < 90){
+     player.animations.add('death', [15, 14, 16, 15],4,true)
+  }
+
   // if (enemyPlayer.health === 0){
   //   enemyPlayer.kill()
   // }
@@ -411,16 +464,48 @@ playerHit2: function(enemyPlayer2, bullet){
 
 player2AnimatedHealthBar: function(){
   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
-}
+},
 
-// loadLevel: function(data) {
-//   data.platforms.forEach(this.spawnPlatform, this);
-// },
+tick: function() {
+        //subtract a second
+        this.timeInSeconds--;
+        //find how many complete minutes are left
+        var minutes = Math.floor(this.timeInSeconds / 60);
+        //find the number of seconds left
+        //not counting the minutes
+        var seconds = this.timeInSeconds - (minutes * 60);
+        //make a string showing the time
+        var timeString = this.addZeros(minutes) + ":" + this.addZeros(seconds);
+        //display the string in the text field
+        this.timeText.text = timeString;
+        //check if the time is up
+        if (this.timeInSeconds == 0) {
+            //remove the timer from the game
+            this.game.time.events.remove(this.timer);
+            //call your game over or other code here!
+            this.timeText.text="Game Over";
+            this.game.state.restart()
+        }
+    },
+    /**
+     * add leading zeros to any number less than 10
+     * for example turn 1 to 01
+     */
+addZeros: function(num) {
+        if (num < 10) {
+            num = "0" + num;
+        }
+        return num;
+    }
 
-// spawnPlatform: function(platform) {
-//     this.game.add.sprite(platform.x, platform.y, platform.image);
+// flipCharacter: function(){
+//   if (player.body.velocity.x < 0) {
+//         player.scale.x *= -1
+//     }
+//     else if (player.body.velocity.x > 0) {
+//         player.scale.x *= 1
+//     }
 // }
-
 
 
 }
