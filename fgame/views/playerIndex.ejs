@@ -10,23 +10,35 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
-    <style>
-    body {
-      background-image: url('/images/BG.png')
-    }
-  </style>
 
+    <!--Stylesheets -->
+    <link rel="stylesheet" href="/styles/playerJoin.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <!-- <img script src="/images/BG.png"></script> -->
-<section class="welcome-player">
+<section class="welcomePlayer">
 
-<h1 class="game-title">Welcome to the King of Bartenders!</h1>
+<h1 class="game-title">Dino Bros!</h1>
 <p>
   <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
     Join
   </button>
 </p>
-
+<form method="POST" action="/register" id="playerRegister">
+    <div class="collapse" id="collapseExample">
+      <div class="playerForm">
+        <span class="nameField">name</span>   </br>
+        <input name="playerName" type="text" />
+          </br></br>
+        <span class="emailField">email</span>   </br>
+        <input name="playerEmail" type="email" />
+          </br></br>
+        <button class="btn btn-success btn-lg" id="playButton" type="submit" >
+         PLAY
+        </button>
+      </div>
+    </div>
+</form>
 </section>
 </body>
