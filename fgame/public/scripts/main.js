@@ -6,6 +6,7 @@ var player;
 var player2;
 var cursors;
 var currentHealthStatus;
+var currentHealthStatus1;
 var music;
 var platforms;
 var playerSpeed = 400
@@ -41,8 +42,8 @@ init: function(){
 
 render: function(){
 
-  this.game.debug.body(player)
-  this.game.debug.body(player2)
+  // this.game.debug.body(player)
+  // this.game.debug.body(player2)
 },
 
 preload: function(){
@@ -273,12 +274,20 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   bullet2.trackSprite(player2);
   bullet2.bulletSpeed = 1000
 
-  var totalHealthBar = this.game.add.image(300, 20, 'health_red')
+  var totalHealthBar = this.game.add.image(600, 20, 'health_red')
   totalHealthBar.fixedToCamera = true
-  currentHealthStatus = this.game.add.image(300, 20, 'health_green')
+  currentHealthStatus = this.game.add.image(600, 20, 'health_green')
   currentHealthStatus.fixedToCamera = true
-  var healthText = this.game.add.text(210, 20, 'P2 Health', {fontSize: '20px', fill: '#ffffff'})
+  var healthText = this.game.add.text(510, 20, `${action[2].name}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText.fixedToCamera = true
+
+  var totalHealthBar1 = this.game.add.image(200, 20, 'health_red')
+  totalHealthBar1.fixedToCamera = true
+  currentHealthStatus1 = this.game.add.image(200, 20, 'health_green')
+  currentHealthStatus1.fixedToCamera = true
+  var healthText1 = this.game.add.text(110, 20, `${action[1].name}: `, {fontSize: '20px', fill: '#ffffff'})
+  healthText1.fixedToCamera = true
+
 
 
   cursors = this.input.keyboard.createCursorKeys()
@@ -437,7 +446,7 @@ update: function(){
         player2.body.velocity.x = playerSpeed;
         player2.scale.setTo(4, 4);
          player2.play('walking2')
-         bullet.fireAngle = Phaser.ANGLE_RIGHT
+         bullet2.fireAngle = Phaser.ANGLE_RIGHT
 
      }
 
@@ -445,7 +454,7 @@ update: function(){
         player2.body.velocity.x = -playerSpeed;
         player2.scale.setTo(-4, 4);
          player2.play('walking2')
-         bullet.fireAngle = Phaser.ANGLE_LEFT
+         bullet2.fireAngle = Phaser.ANGLE_LEFT
          // bullet.fireAngle = -90
          //bullet.fireAngle = Phaser.ANGLE_UP
          // bullet.fireAngle = 90
@@ -484,7 +493,7 @@ update: function(){
      }
 
      if (action[2].b == true ){
-        bullet.fire()
+        bullet2.fire()
      }
   }
 
@@ -571,6 +580,8 @@ playerMelee: function(enemyPlayer){
   }
 },
 
+
+//P1 attack -> P2 got hit
 playerHit: function(enemyPlayer, bullet){
   bullet.kill()
   // enemyPlayer.kill()
@@ -590,16 +601,33 @@ playerHit: function(enemyPlayer, bullet){
   // }
 },
 
+//P2 attack -> P1 got hit
 playerHit2: function(enemyPlayer2, bullet){
   bullet.kill()
   // enemyPlayer.kill()
   enemyPlayer2.damage(5)
+  this.player1AnimatedHealthBar()
   console.log(enemyPlayer2.health)
 },
+
+player1AnimatedHealthBar: function(){
+  currentHealthStatus1.scale.setTo(player.health / player.maxHealth, 1)
+},
+
+// player2AnimatedHealthBar: function(){
+//   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+// },
+
+// player2AnimatedHealthBar: function(){
+//   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+// },
 
 player2AnimatedHealthBar: function(){
   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
 },
+
+
+
 
 tick: function() {
         //subtract a second

@@ -85,9 +85,11 @@ app.use(bodyParser.json())
     socket.on('userInput', function(data) {
       if (data[1]){
         userAction['1'] = data[1];
+        userAction['1']['name'] = playerList[0].name;
       }
       if (data[2]){
               userAction['2'] = data[2];
+              userAction['2']['name'] = playerList[1].name;
             }
       if (Object.keys(userAction).length == 2 && userAction['2']) {
         setTimeout(function(){
