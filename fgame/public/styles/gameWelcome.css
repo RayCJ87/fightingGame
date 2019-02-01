@@ -1,0 +1,65 @@
+@media screen and (min-width: 1024px){
+
+  body{
+    background-image: url('/assets/gameWelcome2.png');
+    height: 100%;
+
+  /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .welcomeGame{
+    padding-top: 60px;
+    text-align: center;
+  }
+  .game-title {
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 450%;
+  }
+
+
+  #playButton {
+    margin-top: 120px;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 300%;
+    border-radius: 22px;
+    background-color: 00BFFF:
+  }
+
+
+  #rankButton {
+    margin-top: 150px;
+    background-color: 00BFFF;
+    border-radius: 20px;
+    border-color: transparent;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 150%;
+  }
+
+
+  .rankingForm{
+    padding-top: 5px;
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  .pink-background {
+    background-color:F08080;
+    border-color: transparent;
+  }*/
+
