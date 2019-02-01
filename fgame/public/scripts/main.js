@@ -6,10 +6,11 @@ var player;
 var player2;
 var cursors;
 var currentHealthStatus;
+var music;
 var platforms;
-  playerSpeed = 400
+var playerSpeed = 400
 var socket = io();
-var action ;
+var action={} ;
 // var action2 = {};
 var id;
 var totalPlayer = [player, player2]
@@ -29,7 +30,7 @@ socket.on('userAction', function(data){
 var PlayState = {
 
 init: function(){
-  this.input.maxPointers =1;
+  // this.input.maxPointers =1;
   this.stage.disableVisibilityChange = true;
 
   const enable_gravity = 3200;
@@ -45,6 +46,10 @@ render: function(){
 },
 
 preload: function(){
+
+
+  //music
+  this.game.load.audio('background_music', '/assets/background_music.ogg')
 
   // this.game.load.json('level:1', 'assets/level00.json');
   this.game.load.image('ground', 'assets/ground.png');
@@ -97,6 +102,9 @@ preload: function(){
 
 create: function(){
 
+
+  music = this.game.add.audio('background_music', 1, true)
+  music.play()
   //total time until trigger
         // this.timeInSeconds = 100;
         //make a text field
@@ -290,7 +298,7 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
 },
 
 update: function(){
-
+  this.aliveTest();
   this.handlePlatformCollisions()
   this.handlePlatformCollisions2()
   // this.handleCollisions()
@@ -355,23 +363,88 @@ update: function(){
 
 
      // ---------------------------------------------------------------------
-     console.log("x:  ", action.s.x)
-     console.log("y:  ", action.s.y)
-     if (action.s.x > 0){
-        player.body.velocity.x = playerSpeed;
-        player.scale.setTo(4, 4);
+
+
+
+     if (action.hasOwnProperty(1)){
+           console.log("x:  ", action[1].x)
+     console.log("y:  ", action[1].y)
+       if (action[1].x > 0){
+          player.body.velocity.x = playerSpeed;
+          player.scale.setTo(4, 4);
+           player.play('walking')
+           bullet.fireAngle = Phaser.ANGLE_RIGHT
+
+       }
+
+       if (action[1].x < 0){
+          player.body.velocity.x = -playerSpeed;
+          player.scale.setTo(-4, 4);
+           player.play('walking')
+           bullet.fireAngle = Phaser.ANGLE_LEFT
+           // bullet.fireAngle = -90
+           //bullet.fireAngle = Phaser.ANGLE_UP
+           // bullet.fireAngle = 90
+           // action = '';
+       }
+
+      if (action[1].y < -50){
+       // player.body.velocity.y = -250;
+       // player.play('walking')
+       // bullet.fireAngle = Phaser.ANGLE_UP
+
          player.play('walking')
-         bullet.fireAngle = Phaser.ANGLE_RIGHT
-         // bullet.fireAngle = -90
-         //bullet.fireAngle = Phaser.ANGLE_UP
-         // bullet.fireAngle = 90
-         // action = '';
+         let canJump1 = player.body.touching.down;
+         const JUMP_SPEED = 1500;
+         if (canJump1) {
+            player.body.velocity.y = -JUMP_SPEED;
+         }
+
+         // return canJump1;
+      }
+
+      // if (-50 < action[1].y < -20){
+      //    player.play('walking')
+      //    let canJump1 = player.body.touching.down;
+      //    const JUMP_SPEED = 600;
+      //    if (canJump1) {
+      //       player.body.velocity.y = -JUMP_SPEED;
+      //    }
+
+      //    return canJump1;
+      // }
+
+      if (action[1].a == true){
+          player.play('attack')
+          this.playerMelee(player2)
+
+       }
+
+       if (action[1].b == true ){
+          bullet.fire()
+       }
      }
 
-     if (action.s.x < 0){
-        player.body.velocity.x = -playerSpeed;
-        player.scale.setTo(-4, 4);
-         player.play('walking')
+
+     //------------------------------------------
+     //p2 movement test
+
+     if (action.hasOwnProperty(2)){
+      console.log("x2:  ", action[2].x)
+     console.log("y2:  ", action[2].y)
+
+     if (action[2].x > 0){
+        player2.body.velocity.x = playerSpeed;
+        player2.scale.setTo(4, 4);
+         player2.play('walking2')
+         bullet.fireAngle = Phaser.ANGLE_RIGHT
+
+     }
+
+     if (action[2].x < 0){
+        player2.body.velocity.x = -playerSpeed;
+        player2.scale.setTo(-4, 4);
+         player2.play('walking2')
          bullet.fireAngle = Phaser.ANGLE_LEFT
          // bullet.fireAngle = -90
          //bullet.fireAngle = Phaser.ANGLE_UP
@@ -379,55 +452,41 @@ update: function(){
          // action = '';
      }
 
-    //  if (action.s.y < 0){
-    //     player.body.velocity.y = -250;
-    //      player.play('walking')
-    //      // bullet.fireAngle = -90
-    //      //bullet.fireAngle = Phaser.ANGLE_UP
-    //      // bullet.fireAngle = 90
-    //      // action = '';
+    if (action[2].y < -50){
+       // player2.body.velocity.y = -250;
+       // player2.play('walking2')
+       // bullet2.fireAngle = Phaser.ANGLE_UP
+       // player2.play('walking2')
+       let canJump2 = player2.body.touching.down;
+       const JUMP_SPEED = 1500;
+       if (canJump2) {
+          player2.body.velocity.y = -JUMP_SPEED;
+       }
+
+       // return canJump2;
+    }
+
+    // if (-50 < action[2].y < -20){
+    //    player2.play('walking2')
+    //    let canJump2 = player2.body.touching.down;
+    //    const JUMP_SPEED = 600;
+    //    if (canJump2) {
+    //       player2.body.velocity.y = -JUMP_SPEED;
+    //    }
+
+    //    return canJump2;
     // }
 
-    if (action.s.y < -50){
-       player.play('walking')
-       let canJump = player.body.touching.down;
-       const JUMP_SPEED = 1500;
-       if (canJump) {
-          player.body.velocity.y = -JUMP_SPEED;
-       }
-
-       return canJump;
-    }
-
-    if (-50 < action.s.y < -20){
-       player.play('walking')
-       let canJump = player.body.touching.down;
-       const JUMP_SPEED = 600;
-       if (canJump) {
-          player.body.velocity.y = -JUMP_SPEED;
-       }
-
-       return canJump;
-    }
-
-    if (action.a == true){
-        player.play('attack')
-        this.playerMelee(player2)
+    if (action[2].a == true){
+        player2.play('attack')
+        this.playerMelee(player)
 
      }
 
-     if (action.b == true ){
+     if (action[2].b == true ){
         bullet.fire()
      }
-
-
-
-
-
-
-
-
-
+  }
 
       // if (action2.left == true){
       //    player2.body.velocity.x = -playerSpeed;
@@ -480,6 +539,13 @@ update: function(){
 
     this.handleCollisions()
   },
+
+// playerActions: function(playerAction){
+
+
+
+// }
+
 
 handleCollisions: function(){
   this.game.physics.arcade.collide(player, player2)
@@ -565,6 +631,17 @@ addZeros: function(num) {
             num = "0" + num;
         }
         return num;
+    },
+
+    aliveTest: function(){
+       if (player.alive === true && player2.alive === false){
+         music.destroy()
+         this.game.state.restart()
+       }
+       else if (player.alive === false && player2.alive === true){
+         music.destroy()
+         this.game.state.restart()
+       }
     }
 
 // flipCharacter: function(){

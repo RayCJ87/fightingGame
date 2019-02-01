@@ -8,7 +8,7 @@ var PORT = 8080; // default port 8080
 var io = socketIO(server);
 
 var playerList = [{}, {}, {}, {}];
-var userInput
+var userAction = {};
 const MongoClient = require("mongodb").MongoClient;
 const MONGODB_URI = "mongodb://localhost:27017/fgame";
 
@@ -83,8 +83,19 @@ app.use(bodyParser.json())
 
     //listening events
     socket.on('userInput', function(data) {
-      socket.broadcast.emit('userAction',  data )
-      console.log("userInput:   ", data);
+      if (data[1]){
+        userAction['1'] = data[1];
+      }
+      if (data[2]){
+              userAction['2'] = data[2];
+            }
+      if (Object.keys(userAction).length == 2 && userAction['2']) {
+        setTimeout(function(){
+          socket.broadcast.emit('userAction',  userAction )
+        }, 10)
+
+          console.log("userAction:   ", userAction);
+      }
     })
     //update all status to the game
     // socket.on('user2', function(data) {
