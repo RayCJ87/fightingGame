@@ -82,15 +82,15 @@ app.use(bodyParser.json())
   io.on('connection', function(socket) {
 
     //listening events
-    socket.on('user1', function(data) {
-      socket.broadcast.emit('user1',  data )
-      console.log("Received - 1:   ", data);
+    socket.on('userInput', function(data) {
+      socket.broadcast.emit('userAction',  data )
+      console.log("userInput:   ", data);
     })
     //update all status to the game
-    socket.on('user2', function(data) {
-      socket.emit('user2',  data )
-      console.log("Received - 2:   ", data);
-    })
+    // socket.on('user2', function(data) {
+    //   socket.broadcast.emit('user2',  data )
+    //   console.log("Received - 2:   ", data);
+    // })
   });
 
   server.listen(PORT, () => {

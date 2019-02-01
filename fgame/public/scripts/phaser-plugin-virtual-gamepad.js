@@ -64,9 +64,9 @@
         this.joystickPoint = null;
         this.joystickRadius = null;
         this.joystickPointer = null;
-        this.button = null;
-        this.buttonPoint = null;
-        this.buttonRadius = null;
+        // this.button = null;
+        // this.buttonPoint = null;
+        // this.buttonRadius = null;
 
         // Polling for the joystick and button pushes
         this.preUpdate = gamepadPoll.bind(this);
@@ -127,7 +127,7 @@
         };
 
         // Set the touch area as defined by the button's radius
-        this.joystickRadius = scale * (this.joystick.width / 2);
+        this.joystickRadius = scale * (this.joystick.width / 5);
 
         return this.joystick;
     };
@@ -142,49 +142,49 @@
      * @param {String} key - key for the gamepad's spritesheet
      * @param {Phaser.Button} The button object just created
      */
-    Phaser.Plugin.VirtualGamepad.prototype.addButton = function(x,
-                                                                y,
-                                                                scale,
-                                                                key) {
+    // Phaser.Plugin.VirtualGamepad.prototype.addButton = function(x,
+    //                                                             y,
+    //                                                             scale,
+    //                                                             key) {
 
-        // If we already have a button, return null
-        if (this.button !== null) {
-            return null;
-        }
+    //     // If we already have a button, return null
+    //     if (this.button !== null) {
+    //         return null;
+    //     }
 
-        // Add the button to the game
-        this.button = this.game.add.button(x, y, key, null, this);
-        this.button.anchor.set(0.5);
-        this.button.fixedToCamera = true;
-        this.button.scale.setTo(scale, scale);
+    //     // Add the button to the game
+    //     this.button = this.game.add.button(x, y, key, null, this);
+    //     this.button.anchor.set(0.5);
+    //     this.button.fixedToCamera = true;
+    //     this.button.scale.setTo(scale, scale);
 
-        // Remember the coordinates of the button
-        this.buttonPoint = new Phaser.Point(x, y);
+    //     // Remember the coordinates of the button
+    //     this.buttonPoint = new Phaser.Point(x, y);
 
-        // Set up initial button state
-        this.button.isDown = false;
+    //     // Set up initial button state
+    //     this.button.isDown = false;
 
-        // Set the touch area as defined by the button's radius
-        this.buttonRadius = scale * (this.button.width / 2);
+    //     // Set the touch area as defined by the button's radius
+    //     this.buttonRadius = scale * (this.button.width / 2);
 
-        return this.button;
-    };
+    //     return this.button;
+    // };
 
-    var buttonDown = function() {
-        this.button.isDown = true;
-    };
+    // var buttonDown = function() {
+    //     this.button.isDown = true;
+    // };
 
-    var buttonUp = function() {
-        this.button.isDown = false;
-    };
+    // var buttonUp = function() {
+    //     this.button.isDown = false;
+    // };
 
     var gamepadPoll = function() {
 
         var resetJoystick = true;
 
         // See if any pointers are in range of the joystick or buttons
-        this.button.isDown = false;
-        this.button.frame = 0;
+        // this.button.isDown = false;
+        // this.button.frame = 0;
         this.game.input.pointers.forEach(function(p) {
             resetJoystick = testDistance(p, this);
         }, this);
@@ -219,11 +219,11 @@
         }
 
         // See if the pointer is over the button
-        d = that.buttonPoint.distance(pointer.position);
-        if ((pointer.isDown) && (d < that.buttonRadius)) {
-            that.button.isDown = true;
-            that.button.frame = 1;
-        }
+        // d = that.buttonPoint.distance(pointer.position);
+        // if ((pointer.isDown) && (d < that.buttonRadius)) {
+        //     that.button.isDown = true;
+        //     that.button.frame = 1;
+        // }
 
         return reset;
     };

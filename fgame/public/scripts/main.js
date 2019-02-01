@@ -9,22 +9,22 @@ var currentHealthStatus;
 var platforms;
   playerSpeed = 400
 var socket = io();
-var action1 = {};
-var action2 = {};
+var action ;
+// var action2 = {};
 var id;
 var totalPlayer = [player, player2]
 
-socket.on('user1', function(data){
+socket.on('userAction', function(data){
   console.log("Game received action: ", data)
-  action1 = data;
-  console.log("the action : ---> ", action1)
+  action = data;
+  console.log("the action : ---> ", action)
 })
 
-socket.on('user2', function(data){
-  console.log("Game received action: ", data)
-  action2 = data;
-  console.log("the action : ---> ", action2)
-})
+// socket.on('user2', function(data){
+//   console.log("Game received action: ", data)
+//   action2 = data;
+//   console.log("the action : ---> ", action2)
+// })
 
 var PlayState = {
 
@@ -100,13 +100,13 @@ create: function(){
   //total time until trigger
         // this.timeInSeconds = 100;
         //make a text field
-        this.timeText = this.add.text(640, 25, "0:00");
+        // this.timeText = this.add.text(640, 25, "1:00");
         //turn the text white
-        this.timeText.fill = "#ffffff";
+        // this.timeText.fill = "#ffffff";
         //center the text
-        this.timeText.anchor.set(0.5, 0.5);
+        // this.timeText.anchor.set(0.5, 0.5);
         //set up a loop timer
-        this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.tick, this);
+        // this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.tick, this);
 
 
   groupPlatform = this.game.add.group()
@@ -316,67 +316,143 @@ update: function(){
   player.body.setSize(15,15,7, 7)
   player2.body.setSize(15,15,7, 7)
 
-    if (action1.left == true){
-     player.body.velocity.x = -playerSpeed;
-     player.scale.setTo(-4, 4);
-     player.play('walking')
-     // bullet.fireAngle = 180
-     bullet.fireAngle = Phaser.ANGLE_LEFT
+    // if (action1.left == true){
+    //  player.body.velocity.x = -playerSpeed;
+    //  player.scale.setTo(-4, 4);
+    //  player.play('walking')
+    //  // bullet.fireAngle = 180
+    //  bullet.fireAngle = Phaser.ANGLE_LEFT
 
+    //  }
+    // if (action1.right == true){
+    //    player.body.velocity.x = playerSpeed
+    //    player.scale.setTo(4, 4)
+    //    player.play('walking')
+    //    // bullet.fireAngle = 0
+    //    // player.scale.x *= 1
+    //    bullet.fireAngle = Phaser.ANGLE_RIGHT
+    //  }
+    // if (action1.up == true){
+    //   player.play('walking')
+    //   const JUMP_SPEED = 1500;
+    //   let canJump = player.body.touching.down;
+
+    //   if (canJump) {
+    //       player.body.velocity.y = -JUMP_SPEED;
+    //   }
+
+    //   return canJump;
+    //  }
+    //  if (action1.fire == true){
+    //   bullet.fire()
+    //   // action.fire = false;
+    //  }
+    //  if (action1.punch == true){
+    //   player.play('attack')
+    //   this.playerMelee(player2)
+    //   // action.punch = false;
+    //  }
+
+
+     // ---------------------------------------------------------------------
+     console.log("x:  ", action.s.x)
+     console.log("y:  ", action.s.y)
+     if (action.s.x > 0){
+        player.body.velocity.x = playerSpeed;
+        player.scale.setTo(4, 4);
+         player.play('walking')
+         bullet.fireAngle = Phaser.ANGLE_RIGHT
+         // bullet.fireAngle = -90
+         //bullet.fireAngle = Phaser.ANGLE_UP
+         // bullet.fireAngle = 90
+         // action = '';
      }
-    if (action1.right == true){
-       player.body.velocity.x = playerSpeed
-       player.scale.setTo(4, 4)
+
+     if (action.s.x < 0){
+        player.body.velocity.x = -playerSpeed;
+        player.scale.setTo(-4, 4);
+         player.play('walking')
+         bullet.fireAngle = Phaser.ANGLE_LEFT
+         // bullet.fireAngle = -90
+         //bullet.fireAngle = Phaser.ANGLE_UP
+         // bullet.fireAngle = 90
+         // action = '';
+     }
+
+    //  if (action.s.y < 0){
+    //     player.body.velocity.y = -250;
+    //      player.play('walking')
+    //      // bullet.fireAngle = -90
+    //      //bullet.fireAngle = Phaser.ANGLE_UP
+    //      // bullet.fireAngle = 90
+    //      // action = '';
+    // }
+
+    if (action.s.y < -50){
        player.play('walking')
-       // bullet.fireAngle = 0
-       // player.scale.x *= 1
-       bullet.fireAngle = Phaser.ANGLE_RIGHT
-     }
-    if (action1.up == true){
-      player.play('walking')
-      const JUMP_SPEED = 1500;
-      let canJump = player.body.touching.down;
-
-      if (canJump) {
+       let canJump = player.body.touching.down;
+       const JUMP_SPEED = 1500;
+       if (canJump) {
           player.body.velocity.y = -JUMP_SPEED;
-      }
+       }
 
-      return canJump;
-     }
-     if (action1.fire == true){
-      bullet.fire()
-      // action.fire = false;
-     }
-     if (action1.punch == true){
-      player.play('attack')
-      this.playerMelee(player2)
-      // action.punch = false;
+       return canJump;
+    }
+
+    if (-50 < action.s.y < -20){
+       player.play('walking')
+       let canJump = player.body.touching.down;
+       const JUMP_SPEED = 600;
+       if (canJump) {
+          player.body.velocity.y = -JUMP_SPEED;
+       }
+
+       return canJump;
+    }
+
+    if (action.a == true){
+        player.play('attack')
+        this.playerMelee(player2)
+
      }
 
-      if (action2.left = true){
-         player2.body.velocity.x = -playerSpeed;
-         player2.scale.setTo(-4, 4)
-         player2.play('walking2')
-         bullet2.fireAngle = Phaser.ANGLE_LEFT
-       }
-      if (action2.right == true){
-         player2.body.velocity.x = playerSpeed;
-         player.scale.setTo(4, 4)
-         player2.play('walking2')
-         bullet2.fireAngle = Phaser.ANGLE_RIGHT
-       }
-      if (action2.up == true){
-         player2.play('walking2')
-         const JUMP_SPEED = 1500;
-         let canJump = player2.body.touching.down;
-         if (canJump) {
-            player2.body.velocity.y = -JUMP_SPEED;
-        }
-        return canJump;
-       }
-       if (action2.fire == true){
-        bullet2.fire()
-       }
+     if (action.b == true ){
+        bullet.fire()
+     }
+
+
+
+
+
+
+
+
+
+
+      // if (action2.left == true){
+      //    player2.body.velocity.x = -playerSpeed;
+      //    player2.scale.setTo(-4, 4)
+      //    player2.play('walking2')
+      //    bullet2.fireAngle = Phaser.ANGLE_LEFT
+      //  }
+      // if (action2.right == true){
+      //    player2.body.velocity.x = playerSpeed;
+      //    player.scale.setTo(4, 4)
+      //    player2.play('walking2')
+      //    bullet2.fireAngle = Phaser.ANGLE_RIGHT
+      //  }
+      // if (action2.up == true){
+      //    player2.play('walking2')
+      //    const JUMP_SPEED = 1500;
+      //    let canJump = player2.body.touching.down;
+      //    if (canJump) {
+      //       player2.body.velocity.y = -JUMP_SPEED;
+      //   }
+      //   return canJump;
+      //  }
+      //  if (action2.fire == true){
+      //   bullet2.fire()
+      //  }
 
     // if (aKey.isDown){
     //    player2.body.velocity.x = -250;

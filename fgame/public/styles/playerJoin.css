@@ -1,57 +1,15 @@
-/*body {
-  background-image: url('/images/login3.png')
-}
 
-.welcomePlayer{
-  padding-top: 60px;
-  text-align: center;
-}
-
-#joinButton {
-  background-color: 00BFFF;
-  border-radius: 20px;
-  border-color: transparent;
-}
-
-.playerForm{
-  padding-top: 5px;
-}
-
-.game-title, .nameField, .emailField, #playButton, #joinButton{
-  font-family: 'Gloria Hallelujah', cursive;
-}
-
-.nameField {
-
-}
-
-.inputArea {
- width: 100px;
- border-radius: 5px;
-}
-
-#playButton {
-  margin-top: 180px;
-  font-size: 200%;
-  border-radius: 22px;
-  background-color: 00BFFF:
-}
-
-.pink-background {
-  background-color:F08080;
-  border-color: transparent;
-}*/
 @media screen and (min-width: 1024px){
   body{
     background-image: url('/images/laptopLogin4.png')
   }
   .welcomePlayer{
-    padding-top: 50px;
+    padding-top: 60px;
     text-align: center;
   }
 
   #joinButton {
-    margin-top: 10px;
+    margin-top: 15px;
     background-color: 00BFFF;
     border-radius: 20px;
     border-color: transparent;
@@ -61,22 +19,20 @@
     padding-top: 5px;
   }
 
-  .game-title, .nameField, .emailField, #playButton, #joinButton{
+  .game-title, .nameField, .emailField, #joinButton{
     font-family: 'Gloria Hallelujah', cursive;
-  }
-
-  .nameField {
-
+    font-size: 300%;
   }
 
   .inputArea {
-   width: 100px;
+   width: 200px;
    border-radius: 5px;
   }
 
   #playButton {
     margin-top: 180px;
-    font-size: 200%;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 300%;
     border-radius: 22px;
     background-color: 00BFFF:
   }
@@ -88,7 +44,7 @@
 
 }
 
-@media (orientation: portrait) {
+@media all and (max-width: 800px) {
   body {
     flex-direction: column;
   }
@@ -104,6 +60,7 @@
 
   #joinButton {
     margin-top: 10px;
+    font-size: 150%;
     background-color: 00BFFF;
     border-radius: 20px;
     border-color: transparent;
@@ -115,10 +72,6 @@
 
   .game-title, .nameField, .emailField, #playButton, #joinButton{
     font-family: 'Gloria Hallelujah', cursive;
-  }
-
-  .nameField {
-
   }
 
   .inputArea {
