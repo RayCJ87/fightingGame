@@ -158,10 +158,9 @@ function update() {
        console.log("Ready to send ", userInput);
 
     }
-    var userAction = {};
-    userAction[id] = userInput;
+    userInput;
     console.log("the controller id: ", document.getElementById('userID').innerText)
-    socket.emit('userInput', userAction)
+    socket.emit(`user${id}`, userInput)
 
 
     userInput = {up: false, down: false, left: false, right: false, fire: false, punch: false};

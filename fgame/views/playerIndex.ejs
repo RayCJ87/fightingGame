@@ -2,6 +2,9 @@
       <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 
+
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -19,9 +22,9 @@
 <!-- <img script src="/images/BG.png"></script> -->
 <section class="welcomePlayer">
 
-<h1 class="game-title">Dino Bros!</h1>
+<h1 class="game-title">Dino Bros</h1>
 <p>
-  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" id="joinButton">
     Join
   </button>
 </p>
@@ -29,12 +32,12 @@
     <div class="collapse" id="collapseExample">
       <div class="playerForm">
         <span class="nameField">name</span>   </br>
-        <input name="playerName" type="text" />
-          </br></br>
+        <input name="playerName" type="text" class="inputarea"/>
+          </br>
         <span class="emailField">email</span>   </br>
-        <input name="playerEmail" type="email" />
-          </br></br>
-        <button class="btn btn-success btn-lg" id="playButton" type="submit" >
+        <input name="playerEmail" type="email" class="inputArea"/>
+          </br>
+        <button class="btn btn-primary pink-background" id="playButton" type="submit" >
          PLAY
         </button>
       </div>
