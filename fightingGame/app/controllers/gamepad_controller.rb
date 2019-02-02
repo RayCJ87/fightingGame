@@ -1,0 +1,2 @@
+class GamepadController < ApplicationController
+end

@@ -20,22 +20,51 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-// MongoClient.connect(MONGODB_URI, (err,db) => {
-//   if (err) {
-//     console.error(`Failed to connect: ${MONGODB_URI}`);
-//     throw err;
-//   }
-  console.log(`successfully connected to DB: ${MONGODB_URI}`);
 
+//Start the srever and db
+MongoClient.connect(MONGODB_URI, (err,db) => {
+  if (err) {
+    console.error(`Failed to connect: ${MONGODB_URI}`);
+    throw err;
+  }
+  console.log(`successfully connected to DB: ${MONGODB_URI}`);
+  var gameRecord = db.db("fgame")
+
+  gameRecord.createCollection('scoreRanking', function(err, res) {
+  if (err) throw err;
+    console.log("The collection created!");
+  })
+
+  // var newUpdate1 = { $set: {player: "Gary", score: 150}}
+  // var newUpdate2 = { $set: {player: "Dan", score: 250}}
+  // gameRecord.collection("scoreRanking").updateOne({player: 'Gary'}, newUpdate1, function (err, res) {
+  //   console.log("Gary updated");
+  // })
+  //   gameRecord.collection("scoreRanking").updateOne({player: 'Dan'}, newUpdate2, function (err, res) {
+  //   console.log("Dan updated");
+  // })
+  // db.close();
+  //routing starts here
   app.get("/", (req, res) => {
     // res.send("Hello!");
     res.sendFile(__dirname+ '/views/index.html');
   });
 
   app.get("/welcome", (req, res) => {
+    var rankRecord;
+    gameRecord.collection("scoreRanking").find({}).toArray(function(err, result) {
 
+      if (err) throw err;
+      rankRecord = result;
+      console.log("The rrr:    ", rankRecord);
+      rankRecord.sort(function(a, b) {
+        return b.score - a.score;
+      })
+
+      res.render('welcome', {rankRecord: rankRecord})
+    })
     //ready to send the highscore data to the page
-    res.render('welcome')
+    // console.log("the rankRecord  ", rankRecord);
   });
 
   app.get("/game", (req, res) => {
@@ -75,6 +104,9 @@ app.use(bodyParser.json())
     res.render('controller', tempVar)
   });
 
+  // app.get("/qrcode", (req, res)=> {
+  //   res.render('gameQrcode')
+  // })
 
   // Add the websocket handler
   io.on('connection', function(socket) {
@@ -107,7 +139,14 @@ app.use(bodyParser.json())
       console.log("The winner is", data);
 
       //db save record here
+      console.log(playerList[data['player']-1].name)
+      var scoreObj = {player: playerList[data['player'] -1 ].name, score: data['score']};
+      gameRecord.collection('scoreRanking').insertOne(scoreObj, function(err, res) {
+        if (err) throw err;
+        console.log("player score saved")
+      })
 
+      // gracefulShutDown()
     })
 
   });
@@ -116,21 +155,22 @@ app.use(bodyParser.json())
     console.log(`Example app listening on port ${PORT}!`);
   });
 
-// });
+});
 
 
-// function gracefulShutDown() {
-//   console.log("\nShutting down gracefully......");
-//   try {
-//     db.close();
-//   }
-//   catch (err) {
-//     throw err;
-//   }
 
-//   finally {
-//     console.log("I will be back!");
-//     process.exit();
-//   }
-// }
+function gracefulShutDown() {
+  console.log("\nShutting down gracefully......");
+  try {
+    db.close();
+  }
+  catch (err) {
+    throw err;
+  }
+
+  finally {
+    console.log("I will be back!");
+    process.exit();
+  }
+}
 

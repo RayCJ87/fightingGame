@@ -680,12 +680,13 @@ addZeros: function(num) {
     aliveTest: function(){
        if (player.alive === true && player2.alive === false){
          music.destroy()
-         socket.emit("winner", 1)
+         //get player score;
+         socket.emit("winner", { player: 1, score: 300 })
          this.game.state.restart()
        }
        else if (player.alive === false && player2.alive === true){
          music.destroy()
-         socket.emit("winner", 2)
+         socket.emit("winner",  { player: 2, score: 400 })
          this.game.state.restart()
        }
     },

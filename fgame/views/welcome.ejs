@@ -22,6 +22,7 @@
 </head>
 
 <body>
+
 <section class="welcomeGame">
   <h1 class="game-title">Dino Land</h1>
   <form methon="GET" action='/game' id="gameStart">
@@ -40,11 +41,23 @@
 
  <form  id="playerRanking">
     <div class="collapse" id="collapseExample">
-      <div class="rankingForm">
-        <span class="nameField">name</span>   </br>
-          </br>
-        <span class="emailField">email</span>   </br>
-          </br>
+      <div class="rankingContainer">
+        <table class=rankTable>
+          <% for (let i = 0; i < rankRecord.length; i++) { %>
+          <tr class=theRow>
+            <td class=nameRow>Name:
+            </td>
+            <td class=theName>
+              <%= rankRecord[i]['player']%>
+            </td>
+            <td class=scoreRow>Score:
+            </td>
+            <td class=theScore>
+              <%= rankRecord[i]['score']%>
+            </td>
+          </tr>
+          <% } %>
+        </table>
       </div>
     </div>
 </form>
