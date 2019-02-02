@@ -33,7 +33,8 @@ app.use(bodyParser.json())
   });
 
   app.get("/welcome", (req, res) => {
-    // res.send("Hello!");
+
+    //ready to send the highscore data to the page
     res.render('welcome')
   });
 
@@ -74,9 +75,6 @@ app.use(bodyParser.json())
     res.render('controller', tempVar)
   });
 
-  // app.get("/playerplay", (req, res) => {
-  //   res.render('controller')
-  // })
 
   // Add the websocket handler
   io.on('connection', function(socket) {
@@ -99,11 +97,19 @@ app.use(bodyParser.json())
         setTimeout(function(){
           socket.broadcast.emit('userAction',  userAction )
         }, 10)
-          console.log("userAction:   ", userAction);
+          // console.log("userAction:   ", userAction);
 
       }
 
     })
+
+    socket.on('winner', function(data) {
+      console.log("The winner is", data);
+
+      //db save record here
+
+    })
+
   });
 
   server.listen(PORT, () => {

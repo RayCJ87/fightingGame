@@ -88,8 +88,8 @@ preload: function(){
   // this.load.tilemap('map','assets/level1.csv');
   // this.load.image('tileset','assets/tileset.png');
 
-  this.game.load.image('bullet', 'assets/bullet.png')
-  this.game.load.image('bullet2', 'assets/bullet.png')
+  this.game.load.image('bullet', 'assets/fireball.png')
+  this.game.load.image('bullet2', 'assets/fireball.png')
   // this.load.spritesheet('player','assets/player.png',24,26)
   this.load.spritesheet('player','assets/dino_red.png',24,24)
   // this.load.spritesheet('player','assets/dino_red_flipped.png',24,24)
@@ -104,6 +104,7 @@ preload: function(){
 create: function(){
 
 
+
   music = this.game.add.audio('background_music', 1, true)
   music.play()
   //total time until trigger
@@ -116,7 +117,10 @@ create: function(){
         // this.timeText.anchor.set(0.5, 0.5);
         //set up a loop timer
         // this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.tick, this);
-
+  powerUp = this.game.add.sprite(850, 410, "powerUp")
+  // powerUp = this.game.add.sprite(850, 810, "powerUp")
+  powerUp.scale.setTo(0.25,0.25)
+  this.game.physics.enable(powerUp)
 
   groupPlatform = this.game.add.group()
 
@@ -236,7 +240,12 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   // shotRemainText.text = 'Shots Left ' + shotsRemain;
   bullet2 = this.game.add.weapon(10, 'bullet')
 
-
+  bullet.bulletGravity.y = -3200;
+  bullet2.bulletGravity.y = -3200;
+  bullet.bulletKillType = Phaser.Weapon.KILL_DISTANCE
+  bullet2.bulletKillType = Phaser.Weapon.KILL_DISTANCE
+  bullet.bulletKillDistance = 200
+  bullet2.bulletKillDistance = 200
 
   player = this.add.sprite(550,830,'player', 9);//position of the player
   player.anchor.setTo(0.5,0.5);
@@ -310,6 +319,10 @@ update: function(){
   this.aliveTest();
   this.handlePlatformCollisions()
   this.handlePlatformCollisions2()
+  this.handlePowerUpCollisions()
+  this.physics.arcade.collide(powerUp, groupPlatform)
+  this.physics.arcade.overlap(powerUp, player)
+  this.physics.arcade.overlap(powerUp, player2)
   // this.handleCollisions()
   // this.game.physics.arcade.collide(player, groupPlatform);
   // groupPlatform.body.immovable = true
@@ -637,6 +650,7 @@ tick: function() {
         //find the number of seconds left
         //not counting the minutes
         var seconds = this.timeInSeconds - (minutes * 60);
+
         //make a string showing the time
         var timeString = this.addZeros(minutes) + ":" + this.addZeros(seconds);
         //display the string in the text field
@@ -647,6 +661,8 @@ tick: function() {
             this.game.time.events.remove(this.timer);
             //call your game over or other code here!
             this.timeText.text="Game Over";
+
+            music.destroy();
             this.game.state.restart()
         }
     },
@@ -664,13 +680,47 @@ addZeros: function(num) {
     aliveTest: function(){
        if (player.alive === true && player2.alive === false){
          music.destroy()
+         socket.emit("winner", 1)
          this.game.state.restart()
        }
        else if (player.alive === false && player2.alive === true){
          music.destroy()
+         socket.emit("winner", 2)
          this.game.state.restart()
        }
-    }
+    },
+
+    handlePowerUpCollisions: function(){
+      if (this.physics.arcade.overlap(player, powerUp)){
+
+          (player.health + 25) >100 ?  player.health=100: player.health += 25
+
+         powerUp.destroy()
+
+
+        this.player2AnimatedHealthBar()
+        console.log(player.health)
+      }
+      if (this.physics.arcade.overlap(player2, powerUp)){
+           (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
+
+         powerUp.destroy()
+
+        // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+        this.player2AnimatedHealthBar()
+        console.log(player2.health)
+      }
+    },
+
+    // setWinner: function(){
+    //   if (player.health > 0){
+    //     return 1;
+    //   }
+    //   else  {
+    //     return 2;
+    //   }
+    // }
+
 
 // flipCharacter: function(){
 //   if (player.body.velocity.x < 0) {
