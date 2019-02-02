@@ -6,7 +6,7 @@ var app = express();
 var server = http.createServer(app);
 var PORT = 8080; // default port 8080
 var io = socketIO(server);
-
+var playerCounter = 0;
 var playerList = [{}, {}, {}, {}];
 var userAction = {};
 const MongoClient = require("mongodb").MongoClient;
@@ -81,7 +81,9 @@ app.use(bodyParser.json())
   // Add the websocket handler
   io.on('connection', function(socket) {
 
-    //listening events
+
+
+
     socket.on('userInput', function(data) {
       if (data[1]){
         userAction['1'] = data[1];
@@ -92,18 +94,16 @@ app.use(bodyParser.json())
               userAction['2']['name'] = playerList[1].name;
             }
       if (Object.keys(userAction).length == 2 && userAction['2']) {
+
+
         setTimeout(function(){
           socket.broadcast.emit('userAction',  userAction )
         }, 10)
-
           console.log("userAction:   ", userAction);
+
       }
+
     })
-    //update all status to the game
-    // socket.on('user2', function(data) {
-    //   socket.broadcast.emit('user2',  data )
-    //   console.log("Received - 2:   ", data);
-    // })
   });
 
   server.listen(PORT, () => {

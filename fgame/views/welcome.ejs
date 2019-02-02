@@ -15,8 +15,10 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts/gameStart.js"></script>
 
-  <link rel="stylesheet" href="/styles/gameWelcome.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/gameWelcome.css" type="text/css" />
 </head>
 
 <body>
@@ -26,7 +28,6 @@
     <button class="btn btn-primary pink-background" id="playButton" type="submit" >
       Ready
     </button>
-
   </form>
 
 
@@ -34,6 +35,7 @@
       <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" id="rankButton">
         High Score
       </button>
+
     </p>
 
  <form  id="playerRanking">
