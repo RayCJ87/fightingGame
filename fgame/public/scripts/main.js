@@ -12,7 +12,7 @@ var platforms;
 var playerSpeed = 400
 var socket = io();
 var action={} ;
-// var action2 = {};
+var restartButton;
 var id;
 var totalPlayer = [player, player2]
 
@@ -51,6 +51,9 @@ preload: function(){
 
   //music
   this.game.load.audio('background_music', '/assets/background_music.ogg')
+
+  //restart button
+  // this.game.load.image('restart-Button', '/assets/restart.png');
 
   // this.game.load.json('level:1', 'assets/level00.json');
   this.game.load.image('ground', 'assets/ground.png');
@@ -103,6 +106,9 @@ preload: function(){
 
 create: function(){
 
+  // restartButton = this.game.add.sprite(500, 100, 'restart-Button');
+  // restartButton.scale.setTo (0.05, 0.05);
+  // restartButton.inputEnabled = true;
 
 
   music = this.game.add.audio('background_music', 1, true)
@@ -346,43 +352,6 @@ update: function(){
   player.body.setSize(15,15,7, 7)
   player2.body.setSize(15,15,7, 7)
 
-    // if (action1.left == true){
-    //  player.body.velocity.x = -playerSpeed;
-    //  player.scale.setTo(-4, 4);
-    //  player.play('walking')
-    //  // bullet.fireAngle = 180
-    //  bullet.fireAngle = Phaser.ANGLE_LEFT
-
-    //  }
-    // if (action1.right == true){
-    //    player.body.velocity.x = playerSpeed
-    //    player.scale.setTo(4, 4)
-    //    player.play('walking')
-    //    // bullet.fireAngle = 0
-    //    // player.scale.x *= 1
-    //    bullet.fireAngle = Phaser.ANGLE_RIGHT
-    //  }
-    // if (action1.up == true){
-    //   player.play('walking')
-    //   const JUMP_SPEED = 1500;
-    //   let canJump = player.body.touching.down;
-
-    //   if (canJump) {
-    //       player.body.velocity.y = -JUMP_SPEED;
-    //   }
-
-    //   return canJump;
-    //  }
-    //  if (action1.fire == true){
-    //   bullet.fire()
-    //   // action.fire = false;
-    //  }
-    //  if (action1.punch == true){
-    //   player.play('attack')
-    //   this.playerMelee(player2)
-    //   // action.punch = false;
-    //  }
-
 
      // ---------------------------------------------------------------------
 
@@ -424,17 +393,6 @@ update: function(){
 
          // return canJump1;
       }
-
-      // if (-50 < action[1].y < -20){
-      //    player.play('walking')
-      //    let canJump1 = player.body.touching.down;
-      //    const JUMP_SPEED = 600;
-      //    if (canJump1) {
-      //       player.body.velocity.y = -JUMP_SPEED;
-      //    }
-
-      //    return canJump1;
-      // }
 
       if (action[1].a == true){
           player.play('attack')
@@ -485,19 +443,8 @@ update: function(){
           player2.body.velocity.y = -JUMP_SPEED;
        }
 
-       // return canJump2;
     }
 
-    // if (-50 < action[2].y < -20){
-    //    player2.play('walking2')
-    //    let canJump2 = player2.body.touching.down;
-    //    const JUMP_SPEED = 600;
-    //    if (canJump2) {
-    //       player2.body.velocity.y = -JUMP_SPEED;
-    //    }
-
-    //    return canJump2;
-    // }
 
     if (action[2].a == true){
         player2.play('attack')
@@ -510,54 +457,6 @@ update: function(){
      }
   }
 
-      // if (action2.left == true){
-      //    player2.body.velocity.x = -playerSpeed;
-      //    player2.scale.setTo(-4, 4)
-      //    player2.play('walking2')
-      //    bullet2.fireAngle = Phaser.ANGLE_LEFT
-      //  }
-      // if (action2.right == true){
-      //    player2.body.velocity.x = playerSpeed;
-      //    player.scale.setTo(4, 4)
-      //    player2.play('walking2')
-      //    bullet2.fireAngle = Phaser.ANGLE_RIGHT
-      //  }
-      // if (action2.up == true){
-      //    player2.play('walking2')
-      //    const JUMP_SPEED = 1500;
-      //    let canJump = player2.body.touching.down;
-      //    if (canJump) {
-      //       player2.body.velocity.y = -JUMP_SPEED;
-      //   }
-      //   return canJump;
-      //  }
-      //  if (action2.fire == true){
-      //   bullet2.fire()
-      //  }
-
-    // if (aKey.isDown){
-    //    player2.body.velocity.x = -250;
-    //    player2.play('walking2')
-    //    bullet2.fireAngle = Phaser.ANGLE_LEFT
-    //  }
-    // if (dKey.isDown){
-    //    player2.body.velocity.x = 250
-    //    player2.play('walking2')
-    //    bullet2.fireAngle = Phaser.ANGLE_RIGHT
-    //  }
-    // if (wKey.isDown){
-    //    player2.body.velocity.y = -250;
-    //    player2.play('walking2')
-    //    bullet2.fireAngle = Phaser.ANGLE_UP
-    //  }
-    //  if (sKey.isDown){
-    //    player2.body.velocity.y = 250;
-    //    player2.play('walking2')
-    //    bullet2.fireAngle = Phaser.ANGLE_DOWN
-    //  }
-    //  if (fireButton2.isDown){
-    //   bullet2.fire()
-    //  }
 
     this.handleCollisions()
   },
@@ -661,9 +560,11 @@ tick: function() {
             this.game.time.events.remove(this.timer);
             //call your game over or other code here!
             this.timeText.text="Game Over";
+            restartButton.visible = true;
+            restartButton.events.onInputDown.addOnce(restartGame, this);
 
-            music.destroy();
-            this.game.state.restart()
+            // music.destroy();
+            // this.game.state.restart()
         }
     },
     /**
@@ -682,11 +583,18 @@ addZeros: function(num) {
          music.destroy()
          //get player score;
          socket.emit("winner", { player: 1, score: 300 })
+         // console.log("The restart button", restartButton)
+         // console.log("The restart button visibility --->", restartButton.visible)
+
          this.game.state.restart()
        }
        else if (player.alive === false && player2.alive === true){
          music.destroy()
          socket.emit("winner",  { player: 2, score: 400 })
+         // restartButton.visible = true;
+         // restartButton.events.onInputDown.add(theListener, this)
+         // console.log("The restart button", restartButton)
+         // console.log("The restart button visibility --->", restartButton.visible)
          this.game.state.restart()
        }
     },
@@ -713,24 +621,9 @@ addZeros: function(num) {
       }
     },
 
-    // setWinner: function(){
-    //   if (player.health > 0){
-    //     return 1;
-    //   }
-    //   else  {
-    //     return 2;
-    //   }
-    // }
-
-
-// flipCharacter: function(){
-//   if (player.body.velocity.x < 0) {
-//         player.scale.x *= -1
-//     }
-//     else if (player.body.velocity.x > 0) {
-//         player.scale.x *= 1
-//     }
-// }
+    theListener: function() {
+      this.game.state.restart();
+    }
 
 
 }

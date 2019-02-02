@@ -56,7 +56,6 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
 
       if (err) throw err;
       rankRecord = result;
-      console.log("The rrr:    ", rankRecord);
       rankRecord.sort(function(a, b) {
         return b.score - a.score;
       })

@@ -53,8 +53,6 @@
     opacity: 0.95;
   }
 
-
-
   .theName, .theScore {
     padding-left: 20px;
   }
@@ -75,8 +73,6 @@
     padding-bottom: 5px;
   }
 }
-
-
 
   .pink-background {
     background-color:F08080;
