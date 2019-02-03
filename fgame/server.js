@@ -135,14 +135,14 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
     })
 
     socket.on('winner', function(data) {
-      console.log("The winner is", data);
+      // console.log("The winner is", data);
 
       //db save record here
       console.log(playerList[data['player']-1].name)
       var scoreObj = {player: playerList[data['player'] -1 ].name, score: data['score']};
       gameRecord.collection('scoreRanking').insertOne(scoreObj, function(err, res) {
         if (err) throw err;
-        console.log("player score saved")
+        // console.log("player score saved")
       })
 
       // gracefulShutDown()

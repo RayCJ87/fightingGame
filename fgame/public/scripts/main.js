@@ -15,6 +15,11 @@ var action={} ;
 var restartButton;
 var id;
 var totalPlayer = [player, player2]
+var doDamage1 = 5
+var doDamage2 = 5
+var score1 = 0
+var score2 = 0
+var finalScore = 0
 
 socket.on('userAction', function(data){
   console.log("Game received action: ", data)
@@ -27,6 +32,19 @@ socket.on('userAction', function(data){
 //   action2 = data;
 //   console.log("the action : ---> ", action2)
 // })
+
+WebFontConfig = {
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      // families: ['Revalia']
+      families: ['Press Start 2P']
+    }
+};
 
 var PlayState = {
 
@@ -48,12 +66,15 @@ render: function(){
 
 preload: function(){
 
+   //Google Fonts
+  this.game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+
 
   //music
   this.game.load.audio('background_music', '/assets/background_music.ogg')
 
   //restart button
-  // this.game.load.image('restart-Button', '/assets/restart.png');
+  this.game.load.image('restart-Button', '/assets/restart.png');
 
   // this.game.load.json('level:1', 'assets/level00.json');
   this.game.load.image('ground', 'assets/ground.png');
@@ -83,13 +104,19 @@ preload: function(){
     this.game.load.image('sixteen', 'assets/16.png');
 
 
-    this.game.load.image('tree', 'assets/tree.png');
-    this.game.load.image('skeleton', 'assets/skeleton.png');
-    this.game.load.image('cactus_one', 'assets/cactus_one.png');
+  this.game.load.image('tree', 'assets/tree.png');
+  this.game.load.image('skeleton', 'assets/skeleton.png');
+  this.game.load.image('cactus_one', 'assets/cactus_one.png');
+  this.game.load.image('cactus_two', 'assets/cactus_two.png');
+  this.game.load.image('cactus_three', 'assets/cactus_three.png');
+  this.game.load.image('stone', 'assets/stone.png');
+  this.game.load.image('signArrow', 'assets/sign_arrow.png');
 
  // this.load.tilemap('level:1', 'assets/first_test_340pm.json');
   // this.load.tilemap('map','assets/level1.csv');
   // this.load.image('tileset','assets/tileset.png');
+
+  this.game.load.image('guns', 'assets/edit_gun.png');
 
   this.game.load.image('bullet', 'assets/fireball.png')
   this.game.load.image('bullet2', 'assets/fireball.png')
@@ -100,15 +127,21 @@ preload: function(){
   this.game.load.image('health_green', 'assets/health_green.png')
   this.game.load.image('health_red', 'assets/health_red.png')
 
+  this.game.load.image('powerUp', 'assets/meat_powerUp.png')
+  this.game.load.image('powerUp2', 'assets/meat_powerUp.png')
+
+  this.game.load.image('explosion', 'assets/explosion.png')
+
   this.game.load.image('background','assets/BG.png');
+
 
 },
 
+
 create: function(){
 
-  // restartButton = this.game.add.sprite(500, 100, 'restart-Button');
-  // restartButton.scale.setTo (0.05, 0.05);
-  // restartButton.inputEnabled = true;
+
+
 
 
   music = this.game.add.audio('background_music', 1, true)
@@ -123,10 +156,10 @@ create: function(){
         // this.timeText.anchor.set(0.5, 0.5);
         //set up a loop timer
         // this.timer = this.time.events.loop(Phaser.Timer.SECOND, this.tick, this);
-  powerUp = this.game.add.sprite(850, 410, "powerUp")
+          groupPowerUp = this.game.add.group()
+
   // powerUp = this.game.add.sprite(850, 810, "powerUp")
-  powerUp.scale.setTo(0.25,0.25)
-  this.game.physics.enable(powerUp)
+
 
   groupPlatform = this.game.add.group()
 
@@ -171,17 +204,47 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   var platform9 = this.game.add.sprite(128,867, 'fifteen');
   var platform10 = this.game.add.sprite(0,867, 'fifteen');
 
-  var platform11 = this.game.add.sprite(1152,650, 'fifteen');
-  var platform12 = this.game.add.sprite(1024,650, 'fifteen');
-  var platform13 = this.game.add.sprite(896,650, 'fourteen');
+  // var platform11 = this.game.add.sprite(1152,650, 'fifteen');
+  // var platform12 = this.game.add.sprite(1024,650, 'fifteen');
+  // var platform13 = this.game.add.sprite(896,650, 'fourteen');
 
-  var platform14 = this.game.add.sprite(628,450, 'sixteen');
-  var platform15 = this.game.add.sprite(500,450, 'fifteen');
-  var platform16 = this.game.add.sprite(372,450, 'fourteen');
+  // var platform14 = this.game.add.sprite(628,450, 'sixteen');
+  // var platform15 = this.game.add.sprite(500,450, 'fifteen');
+  // var platform16 = this.game.add.sprite(372,450, 'fourteen');
 
-  this.game.add.sprite(900, 390, "tree")
-  this.game.add.sprite(500, 900, "skeleton")
-  this.game.add.sprite(100, 755, "cactus_one")
+  var platformTwo1 = this.game.add.sprite(1152,650, 'fifteen');
+  var platformTwo2 = this.game.add.sprite(1024,650, 'fourteen');
+
+  var platformThree1 = this.game.add.sprite(756,420, 'sixteen');
+  var platformThree2 = this.game.add.sprite(628,420, 'fifteen');
+  var platformThree3 = this.game.add.sprite(500,420, 'fourteen');
+  // var platform16 = this.game.add.sprite(372,450, 'fourteen');
+
+  var platformFour1 = this.game.add.sprite(478,150, 'sixteen');
+  var platformFour2 = this.game.add.sprite(350,150, 'fourteen');
+
+  var platformFive1 = this.game.add.sprite(338,575, 'sixteen');
+  var platformFive2 = this.game.add.sprite(210,575, 'fourteen');
+
+
+  this.game.add.sprite(1050, 390, "tree")
+  var skeleton1 = this.game.add.sprite(500, 900, "skeleton")
+  // var skeleton2 = this.game.add.sprite(300, 105, "skeleton")
+  this.game.add.sprite(600, 755, "cactus_one")
+  // this.game.add.sprite(278, 400, "cactus_two")
+  this.game.add.sprite(250, 480, "cactus_three")
+  this.game.add.sprite(300, 780, "signArrow")
+  stone = this.game.add.sprite(210, 815, "stone")
+  stone.scale.setTo(0.75,0.75)
+
+  guns = this.game.add.sprite(330, 90, "guns")
+  guns.scale.setTo(0.18, 0.18)
+  this.game.physics.enable(guns)
+
+  powerUp = this.game.add.sprite("powerUp")
+  powerUp2 = this.game.add.sprite("powerUp2")
+  this.game.time.events.add(Phaser.Timer.SECOND * 5, this.powerUpDrop, this)
+  this.game.time.events.add(Phaser.Timer.SECOND * 7, this.powerUpDrop2, this)
 
 //   this.physics.enable(platform1, Phaser.Physics.ARCADE)
 //   this.physics.enable(platform2, Phaser.Physics.ARCADE)
@@ -215,12 +278,25 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   groupPlatform.add(platform8)
   groupPlatform.add(platform9)
   groupPlatform.add(platform10)
-  groupPlatform.add(platform11)
-  groupPlatform.add(platform12)
-  groupPlatform.add(platform13)
-  groupPlatform.add(platform14)
-  groupPlatform.add(platform15)
-  groupPlatform.add(platform16)
+  // groupPlatform.add(platform11)
+  // groupPlatform.add(platform12)
+  // groupPlatform.add(platform13)
+  // groupPlatform.add(platform14)
+  // groupPlatform.add(platform15)
+  // groupPlatform.add(platform16)
+
+  groupPlatform.add(platformTwo1)
+  groupPlatform.add(platformTwo2)
+
+  groupPlatform.add(platformThree1)
+  groupPlatform.add(platformThree2)
+  groupPlatform.add(platformThree3)
+
+  groupPlatform.add(platformFour1)
+  groupPlatform.add(platformFour2)
+
+  groupPlatform.add(platformFive1)
+  groupPlatform.add(platformFive2)
 
   this.game.physics.enable(groupPlatform)
   groupPlatform.setAll('body.allowGravity', false)
@@ -250,8 +326,8 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   bullet2.bulletGravity.y = -3200;
   bullet.bulletKillType = Phaser.Weapon.KILL_DISTANCE
   bullet2.bulletKillType = Phaser.Weapon.KILL_DISTANCE
-  bullet.bulletKillDistance = 200
-  bullet2.bulletKillDistance = 200
+  bullet.bulletKillDistance = 300
+  bullet2.bulletKillDistance = 300
 
   player = this.add.sprite(550,830,'player', 9);//position of the player
   player.anchor.setTo(0.5,0.5);
@@ -266,8 +342,9 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   player2 = this.add.sprite(300,830,'test', 3);//position of the player
   player2.anchor.setTo(0.5,0.5);
   player2.scale.setTo(4,4)
-  player2.animations.add('walking2', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 24, false);
+  player2.animations.add('walking2', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 9, true);
   // player2.animations.add('attack2', [17,18,19,20,21,22,23, 0],7,false)
+  player2.animations.add('attack', [17, 0],7,false)
   player2.animations.add('death', [15, 14, 16, 15],4,false)
   player2.health = 100
   player2.maxhealth = 100
@@ -284,10 +361,10 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   player2.body.collideWorldBounds = true;
 
   bullet.trackSprite(player);
-  bullet.bulletSpeed = 1000
+  bullet.bulletSpeed = 600
   // bullet.fireLimit = 10
   bullet2.trackSprite(player2);
-  bullet2.bulletSpeed = 1000
+  bullet2.bulletSpeed = 600
 
   var totalHealthBar = this.game.add.image(600, 20, 'health_red')
   totalHealthBar.fixedToCamera = true
@@ -321,11 +398,33 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
 
 },
 
+
+
 update: function(){
+
+// PowerUp 1 Collision Detectors
+ this.physics.arcade.collide(powerUp, groupPlatform)
+ this.physics.arcade.overlap(powerUp, player)
+ this.physics.arcade.overlap(powerUp, player2)
+ this.game.physics.enable(powerUp)
+
+ // Powerup 2 Collision Detectors
+ this.physics.arcade.collide(powerUp2, groupPlatform)
+ this.physics.arcade.overlap(powerUp2, player)
+ this.physics.arcade.overlap(powerUp2, player2)
+ this.game.physics.enable(powerUp2)
+
+  this.physics.arcade.collide(guns, groupPlatform)
+  this.physics.arcade.overlap(guns, player)
+  this.physics.arcade.overlap(guns, player2)
+
   this.aliveTest();
+  this.handleCollisions();
   this.handlePlatformCollisions()
-  this.handlePlatformCollisions2()
+  // this.handlePlatformCollisions2()
   this.handlePowerUpCollisions()
+  this.handlePowerUpCollisions2()
+  this.handleGunsCollisions()
   this.physics.arcade.collide(powerUp, groupPlatform)
   this.physics.arcade.overlap(powerUp, player)
   this.physics.arcade.overlap(powerUp, player2)
@@ -448,7 +547,7 @@ update: function(){
 
     if (action[2].a == true){
         player2.play('attack')
-        this.playerMelee(player)
+        this.playerMelee2(player)
 
      }
 
@@ -469,18 +568,17 @@ update: function(){
 
 
 handleCollisions: function(){
-  this.game.physics.arcade.collide(player, player2)
-
+  this.game.physics.arcade.overlap(player, player2);
 },
 
 handlePlatformCollisions: function(){
   this.game.physics.arcade.collide(player, groupPlatform)
-  // this.game.physics.arcade.collide(player2, groupPlatform)
-},
-
-handlePlatformCollisions2: function(){
   this.game.physics.arcade.collide(player2, groupPlatform)
 },
+
+// handlePlatformCollisions2: function(){
+//   this.game.physics.arcade.collide(player2, groupPlatform)
+// },
 
 playerMelee: function(enemyPlayer){
 
@@ -492,12 +590,22 @@ playerMelee: function(enemyPlayer){
   }
 },
 
+playerMelee2: function(enemyPlayer){
+
+  if (this.physics.arcade.collide(player, player2)){
+    enemyPlayer.damage(1)
+  // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+  this.player1AnimatedHealthBar()
+  console.log(enemyPlayer.health)
+  }
+},
+
 
 //P1 attack -> P2 got hit
 playerHit: function(enemyPlayer, bullet){
   bullet.kill()
   // enemyPlayer.kill()
-  enemyPlayer.damage(5)
+  enemyPlayer.damage(doDamage1)
   this.player2AnimatedHealthBar()
   console.log(enemyPlayer.health)
 
@@ -517,7 +625,7 @@ playerHit: function(enemyPlayer, bullet){
 playerHit2: function(enemyPlayer2, bullet){
   bullet.kill()
   // enemyPlayer.kill()
-  enemyPlayer2.damage(5)
+  enemyPlayer2.damage(doDamage2)
   this.player1AnimatedHealthBar()
   console.log(enemyPlayer2.health)
 },
@@ -579,23 +687,26 @@ addZeros: function(num) {
     },
 
     aliveTest: function(){
+
+
+
        if (player.alive === true && player2.alive === false){
          music.destroy()
          //get player score;
          socket.emit("winner", { player: 1, score: 300 })
+         this.restartTextClick()
          // console.log("The restart button", restartButton)
          // console.log("The restart button visibility --->", restartButton.visible)
-
-         this.game.state.restart()
+         // this.game.state.restart()
        }
        else if (player.alive === false && player2.alive === true){
          music.destroy()
          socket.emit("winner",  { player: 2, score: 400 })
-         // restartButton.visible = true;
+         this.restartTextClick()
          // restartButton.events.onInputDown.add(theListener, this)
          // console.log("The restart button", restartButton)
          // console.log("The restart button visibility --->", restartButton.visible)
-         this.game.state.restart()
+         // this.game.state.restart()
        }
     },
 
@@ -621,9 +732,114 @@ addZeros: function(num) {
       }
     },
 
-    theListener: function() {
-      this.game.state.restart();
-    }
+    handlePowerUpCollisions: function(){
+       if (this.physics.arcade.overlap(player, powerUp)){
+         (player.health + 25) >100 ?  player.health=100: player.health += 25
+         powerUp.destroy()
+         this.printPowerUp()
+      //
+       // this.player2AnimatedHealthBar()
+      //
+       console.log(player.health)
+       }
+       if (this.physics.arcade.overlap(player2, powerUp)){
+          (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
+          powerUp.destroy()
+          this.printPowerUp()
+       // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+       //
+       this.player2AnimatedHealthBar()
+       //
+       console.log(player2.health)
+       }
+      },
+
+      handlePowerUpCollisions2: function(){
+          if (this.physics.arcade.overlap(player, powerUp2)){
+            (player.health + 25) >100 ?  player.health=100: player.health += 25
+            powerUp2.destroy()
+            this.printPowerUp()
+
+            // Richmond modified line 658 to player1AnimatedHealthBar
+            this.player1AnimatedHealthBar()
+            console.log(player.health)
+          }
+          if (this.physics.arcade.overlap(player2, powerUp2)){
+            (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
+            powerUp2.destroy()
+            this.printPowerUp()
+
+          // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+          this.player2AnimatedHealthBar()
+          console.log(player2.health)
+          }
+      },
+
+      powerUpDrop: function(){
+         powerUp = this.game.add.sprite(this.game.rnd.integerInRange(800, 1230), 10, "powerUp")
+          // powerUp = this.game.add.sprite(850, 810, "powerUp")
+         powerUp.scale.setTo(0.17,0.17)
+
+         this.physics.arcade.collide(powerUp, groupPlatform)
+         this.physics.arcade.overlap(powerUp, player)
+         this.physics.arcade.overlap(powerUp, player2)
+         this.game.physics.enable(powerUp)
+        },
+
+      powerUpDrop2: function(){
+         powerUp2 = this.game.add.sprite(this.game.rnd.integerInRange(50, 800), 10, "powerUp2")
+          // powerUp = this.game.add.sprite(850, 810, "powerUp")
+          powerUp2.scale.setTo(0.17,0.17)
+
+         this.physics.arcade.collide(powerUp2, groupPlatform)
+         this.physics.arcade.overlap(powerUp2, player)
+         this.physics.arcade.overlap(powerUp2, player2)
+         this.game.physics.enable(powerUp2)
+        },
+
+      handleGunsCollisions: function(){
+          if (this.physics.arcade.overlap(player, guns)){
+            doDamage1 = 10
+            guns.destroy()
+            this.printGun()
+          }
+          if (this.physics.arcade.overlap(player2, guns)){
+           doDamage2 = 10
+           guns.destroy()
+           this.printGun()
+          }
+        },
+
+      printGun: function(){
+        explosion = this.game.add.text(275,260, "Double Damage!")
+        explosion.font = 'Press Start 2P'
+        explosion.fontSize = 50
+        explosion.addColor("#ff0000", 0);
+        this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){explosion.kill()} ,this)
+      },
+
+      printPowerUp: function(){
+        powerUpText = this.game.add.text(280,220, "Health Up!")
+        powerUpText.font = 'Press Start 2P'
+        powerUpText.fontSize = 50
+        powerUpText.addColor("#0000FF", 0);
+        this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){powerUpText.kill()} ,this)
+      },
+
+      restartTextClick: function(){
+       restartText = this.game.add.text(380, 220, 'Click Here to Restart')
+       restartText.font = 'Press Start 2P'
+       restartText.fontSize = 30
+       restartText.addColor("#0000FF", 0);
+       restartText.inputEnabled = true;
+       restartText.events.onInputDown.add(this.theListener, this);
+      },
+
+      theListener: function() {
+        this.game.state.restart();
+      }
+
+
 
 
 }
