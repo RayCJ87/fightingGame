@@ -13,7 +13,7 @@ $( document ).ready(function() {
 
 socket.on('userAction', function(data){
   console.log("Game received action: ", data)
-  if (data[2]){
+  if (data[2]["name"]){
     document.getElementById('playButton').disabled = false;
     document.getElementById('playButton').innerText = 'Start';
   }

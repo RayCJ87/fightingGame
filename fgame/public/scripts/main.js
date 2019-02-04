@@ -865,7 +865,7 @@ addZeros: function(num) {
           if (this.physics.arcade.overlap(player2, powerUp2)){
             (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
             powerUp2.destroy()
-            this.printPowerUp()
+            this.printPowerUp2()
 
           // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
           this.player2AnimatedHealthBar()
@@ -958,6 +958,13 @@ addZeros: function(num) {
         powerUpText.fontSize = 50
         powerUpText.addColor("#0000FF", 0);
         this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){powerUpText.kill()} ,this)
+      },
+      printPowerUp2: function(){
+        powerUpText2 = this.game.add.text(280,220, "Health Up!")
+        powerUpText2.font = 'Press Start 2P'
+        powerUpText2.fontSize = 50
+        powerUpText2.addColor("#0000FF", 0);
+        this.game.time.events.add(Phaser.Timer.SECOND * 2, function(){powerUpText2.kill()} ,this)
       },
 
       restartTextClick: function(){
