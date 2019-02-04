@@ -614,7 +614,7 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
 
        }
 
-       if (action[1].b == true ){
+       if (action[1].b == true && player.alive === true){
           bullet.fire()
        }
      }
@@ -663,7 +663,7 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
 
      }
 
-     if (action[2].b == true ){
+     if (action[2].b == true && player2.alive === true){
         bullet2.fire()
      }
   }
@@ -713,7 +713,7 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
 
      }
 
-     if (action[3].b == true ){
+     if (action[3].b == true && player3.alive === true){
         bullet3.fire()
      }
    }
@@ -761,7 +761,7 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
 
      }
 
-     if (action[4].b == true ){
+     if (action[4].b == true && player4.alive === true){
         bullet4.fire()
      }
    }
