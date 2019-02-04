@@ -1033,42 +1033,42 @@ player4AnimatedHealthBar: function(){
 
 
 
-tick: function() {
-        //subtract a second
-        this.timeInSeconds--;
-        //find how many complete minutes are left
-        var minutes = Math.floor(this.timeInSeconds / 60);
-        //find the number of seconds left
-        //not counting the minutes
-        var seconds = this.timeInSeconds - (minutes * 60);
+// tick: function() {
+//         //subtract a second
+//         this.timeInSeconds--;
+//         //find how many complete minutes are left
+//         var minutes = Math.floor(this.timeInSeconds / 60);
+//         //find the number of seconds left
+//         //not counting the minutes
+//         var seconds = this.timeInSeconds - (minutes * 60);
 
-        //make a string showing the time
-        var timeString = this.addZeros(minutes) + ":" + this.addZeros(seconds);
-        //display the string in the text field
-        this.timeText.text = timeString;
-        //check if the time is up
-        if (this.timeInSeconds == 0) {
-            //remove the timer from the game
-            this.game.time.events.remove(this.timer);
-            //call your game over or other code here!
-            this.timeText.text="Game Over";
-            restartButton.visible = true;
-            restartButton.events.onInputDown.addOnce(restartGame, this);
+//         //make a string showing the time
+//         var timeString = this.addZeros(minutes) + ":" + this.addZeros(seconds);
+//         //display the string in the text field
+//         this.timeText.text = timeString;
+//         //check if the time is up
+//         if (this.timeInSeconds == 0) {
+//             //remove the timer from the game
+//             this.game.time.events.remove(this.timer);
+//             //call your game over or other code here!
+//             this.timeText.text="Game Over";
+//             restartButton.visible = true;
+//             restartButton.events.onInputDown.addOnce(restartGame, this);
 
-            // music.destroy();
-            // this.game.state.restart()
-        }
-    },
+//             // music.destroy();
+//             // this.game.state.restart()
+//         }
+//     },
     /**
      * add leading zeros to any number less than 10
      * for example turn 1 to 01
      */
-addZeros: function(num) {
-        if (num < 10) {
-            num = "0" + num;
-        }
-        return num;
-    },
+// addZeros: function(num) {
+//         if (num < 10) {
+//             num = "0" + num;
+//         }
+//         return num;
+//     },
 
     aliveTest: function(){
 
@@ -1104,7 +1104,7 @@ addZeros: function(num) {
        }
        else if (player.alive === false && player2.alive === false && player3.alive === true && player4.alive === false && winnerCheck){
         finalScore = player3.health * 10
-        this.printFinalScore(action[1].name.slice(0, 6))
+        this.printFinalScore(action[3].name.slice(0, 6))
          music.destroy()
          //get player score;
          socket.emit("winner", { player: 3, score: finalScore })
@@ -1117,7 +1117,7 @@ addZeros: function(num) {
        }
        else if (player.alive === false && player2.alive === false && player3.alive === false && player4.alive === true && winnerCheck){
         finalScore = player4.health * 10
-        this.printFinalScore(action[1].name.slice(0, 6))
+        this.printFinalScore(action[4].name.slice(0, 6))
          music.destroy()
          //get player score;
          socket.emit("winner", { player: 4, score: finalScore })
@@ -1199,7 +1199,7 @@ addZeros: function(num) {
           if (this.physics.arcade.overlap(player, powerUp2)){
             (player.health + 25) >100 ?  player.health=100: player.health += 25
             powerUp2.destroy()
-            this.printPowerUp()
+            this.printPowerUp2()
 
             // Richmond modified line 658 to player1AnimatedHealthBar
             this.player1AnimatedHealthBar()
@@ -1208,7 +1208,7 @@ addZeros: function(num) {
           if (this.physics.arcade.overlap(player2, powerUp2)){
             (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
             powerUp2.destroy()
-            this.printPowerUp()
+            this.printPowerUp2()
 
           // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
           this.player2AnimatedHealthBar()
@@ -1217,7 +1217,7 @@ addZeros: function(num) {
           if (this.physics.arcade.overlap(player3, powerUp2)){
             (player3.health + 25) >100 ?  player3.health=100: player3.health += 25
             powerUp2.destroy()
-            this.printPowerUp()
+            this.printPowerUp2()
 
           // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
           this.player3AnimatedHealthBar()
@@ -1226,7 +1226,7 @@ addZeros: function(num) {
           if (this.physics.arcade.overlap(player4, powerUp2)){
             (player4.health + 25) >100 ?  player4.health=100: player4.health += 25
             powerUp2.destroy()
-            this.printPowerUp()
+            this.printPowerUp2()
 
           // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
           this.player4AnimatedHealthBar()
