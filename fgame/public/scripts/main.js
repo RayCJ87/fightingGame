@@ -17,6 +17,8 @@ var id;
 var totalPlayer = [player, player2]
 var doDamage1 = 5
 var doDamage2 = 5
+var doDamage3 = 5
+var doDamage4 = 5
 var finalScore = 0
 var winnerCheck = true;
 
@@ -113,8 +115,12 @@ preload: function(){
 
   this.game.load.image('bullet', 'assets/fireball.png')
   this.game.load.image('bullet2', 'assets/fireball.png')
+  this.game.load.image('bullet3', 'assets/fireball.png')
+  this.game.load.image('bullet4', 'assets/fireball.png')
   // this.load.spritesheet('player','assets/player.png',24,26)
   this.load.spritesheet('player','assets/dino_red.png',24,24)
+    this.load.spritesheet('player3','assets/dino_blue.png', 24, 24)
+  this.load.spritesheet('player4','assets/dino_green.png', 24, 24)
   // this.load.spritesheet('player','assets/dino_red_flipped.png',24,24)
   this.load.spritesheet('test','assets/dino_green.png', 24, 24)
   this.game.load.image('health_green', 'assets/health_green.png')
@@ -122,6 +128,10 @@ preload: function(){
 
   this.game.load.image('powerUp', 'assets/meat_powerUp.png')
   this.game.load.image('powerUp2', 'assets/meat_powerUp.png')
+
+     this.game.load.image('barrel_red', 'assets/barrel_red.png')
+   this.game.load.image('barrel_red2', 'assets/barrel_red.png')
+   this.game.load.image('barrel_red3', 'assets/barrel_red.png')
 
   this.game.load.image('explosion', 'assets/explosion.png')
 
@@ -132,9 +142,6 @@ preload: function(){
 
 
 create: function(){
-
-
-
 
 
   music = this.game.add.audio('background_music', 1, true)
@@ -159,7 +166,14 @@ create: function(){
    var backgroundImage = this.game.add.image(0,0, 'background');
    this.game.world.sendToBack(backgroundImage)
 
+  barrel_red = this.game.add.sprite(0, 750, 'barrel_red')
+  barrel_red.scale.setTo(0.5, 0.5)
 
+  barrel_red2 = this.game.add.sprite(0, 631, 'barrel_red2')
+  barrel_red2.scale.setTo(0.5, 0.5)
+
+  barrel_red3 = this.game.add.sprite(0, 512, 'barrel_red3')
+  barrel_red3.scale.setTo(0.5, 0.5)
 
 var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   var platform2 = this.game.add.sprite(1024,867, 'fifteen');
@@ -203,8 +217,8 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
 
   powerUp = this.game.add.sprite("powerUp")
   powerUp2 = this.game.add.sprite("powerUp2")
-  this.game.time.events.add(Phaser.Timer.SECOND * 5, this.powerUpDrop, this)
-  this.game.time.events.add(Phaser.Timer.SECOND * 7, this.powerUpDrop2, this)
+  this.game.time.events.add(Phaser.Timer.SECOND * 1, this.powerUpDrop, this)
+  this.game.time.events.add(Phaser.Timer.SECOND * 2, this.powerUpDrop2, this)
 
 //   this.physics.enable(platform1, Phaser.Physics.ARCADE)
 //   this.physics.enable(platform2, Phaser.Physics.ARCADE)
@@ -362,6 +376,36 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
 
 update: function(){
 
+//Barrel 1 to everything
+ this.physics.arcade.collide(barrel_red, groupPlatform)
+ this.physics.arcade.collide(barrel_red, player)
+ this.physics.arcade.collide(barrel_red, player2)
+// this.physics.arcade.collide(barrel_red, player3)
+ // this.physics.arcade.collide(barrel_red, player4)
+ this.game.physics.enable(barrel_red)
+
+//Barrel 2 to everything
+ this.physics.arcade.collide(barrel_red2, groupPlatform)
+ this.physics.arcade.collide(barrel_red2, player)
+ this.physics.arcade.collide(barrel_red2, player2)
+// this.physics.arcade.collide(barrel_red2, player3)
+ // this.physics.arcade.collide(barrel_red2, player4)
+ this.game.physics.enable(barrel_red2)
+
+//Barrel 3 to everything
+ this.physics.arcade.collide(barrel_red3, groupPlatform)
+ this.physics.arcade.collide(barrel_red3, player)
+ this.physics.arcade.collide(barrel_red3, player2)
+// this.physics.arcade.collide(barrel_red3, player3)
+ // this.physics.arcade.collide(barrel_red3, player4)
+ this.game.physics.enable(barrel_red3)
+
+//Barrel to Barrel
+this.physics.arcade.collide(barrel_red, barrel_red2)
+this.physics.arcade.collide(barrel_red, barrel_red3)
+this.physics.arcade.collide(barrel_red2, barrel_red3)
+
+
 // PowerUp 1 Collision Detectors
  this.physics.arcade.collide(powerUp, groupPlatform)
  this.physics.arcade.overlap(powerUp, player)
@@ -382,7 +426,7 @@ update: function(){
   this.handleCollisions();
   this.handlePlatformCollisions()
   // this.handlePlatformCollisions2()
-  this.handlePowerUpCollisions()
+  // this.handlePowerUpCollisions()
   this.handlePowerUpCollisions2()
   this.handleGunsCollisions()
   this.physics.arcade.collide(powerUp, groupPlatform)
@@ -708,7 +752,7 @@ addZeros: function(num) {
          powerUp.destroy()
          this.printPowerUp()
       //
-       // this.player2AnimatedHealthBar()
+       this.player1AnimatedHealthBar()
       //
        console.log(player.health)
        }
@@ -797,12 +841,18 @@ addZeros: function(num) {
       },
 
       restartTextClick: function(){
-       restartText = this.game.add.text(380, 300, 'Click Here to Restart')
+       restartText = this.game.add.text(380, 330, 'Click Here to Restart')
        restartText.font = 'Press Start 2P'
        restartText.fontSize = 30
        restartText.addColor("#0000FF", 0);
        restartText.inputEnabled = true;
        restartText.events.onInputDown.add(this.theListener, this);
+       newGameText = this.game.add.text(380, 400, 'New Game')
+       newGameText.font = 'Press Start 2P'
+       newGameText.fontSize = 30
+       newGameText.inputEnabled = true;
+       newGameText.addColor("#0000FF", 0);
+       newGameText.events.onInputDown.add(function() { window.location.href = "http://localhost:8080/newgame";}, this);
       },
 
       printFinalScore: function(name){

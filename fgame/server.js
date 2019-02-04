@@ -52,6 +52,11 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
     res.sendFile(__dirname+ '/views/index.html');
   });
 
+  app.get("/newgame", (req, res) => {
+    playerList = [{}, {}, {}, {}];
+    res.render('newgame');
+  })
+
   app.get("/welcome", (req, res) => {
     var rankRecord;
     gameRecord.collection("highRanking").find({}).toArray(function(err, result) {
