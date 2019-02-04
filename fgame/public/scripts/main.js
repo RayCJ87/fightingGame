@@ -17,14 +17,12 @@ var id;
 var totalPlayer = [player, player2]
 var doDamage1 = 5
 var doDamage2 = 5
-var score1 = 0
-var score2 = 0
 var finalScore = 0
 
 socket.on('userAction', function(data){
-  console.log("Game received action: ", data)
+  // console.log("Game received action: ", data)
   action = data;
-  console.log("the action : ---> ", action)
+  // console.log("the action : ---> ", action)
 })
 
 // socket.on('user2', function(data){
@@ -370,14 +368,14 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   totalHealthBar.fixedToCamera = true
   currentHealthStatus = this.game.add.image(600, 20, 'health_green')
   currentHealthStatus.fixedToCamera = true
-  var healthText = this.game.add.text(510, 20, `${action[2].name}: `, {fontSize: '20px', fill: '#ffffff'})
+  var healthText = this.game.add.text(510, 20, `${action[2].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText.fixedToCamera = true
 
   var totalHealthBar1 = this.game.add.image(200, 20, 'health_red')
   totalHealthBar1.fixedToCamera = true
   currentHealthStatus1 = this.game.add.image(200, 20, 'health_green')
   currentHealthStatus1.fixedToCamera = true
-  var healthText1 = this.game.add.text(110, 20, `${action[1].name}: `, {fontSize: '20px', fill: '#ffffff'})
+  var healthText1 = this.game.add.text(110, 20, `${action[1].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText1.fixedToCamera = true
 
 
@@ -583,7 +581,7 @@ handlePlatformCollisions: function(){
 playerMelee: function(enemyPlayer){
 
   if (this.physics.arcade.collide(player, player2)){
-    enemyPlayer.damage(1)
+    enemyPlayer.damage(5)
   // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
   this.player2AnimatedHealthBar()
   console.log(enemyPlayer.health)
@@ -593,7 +591,7 @@ playerMelee: function(enemyPlayer){
 playerMelee2: function(enemyPlayer){
 
   if (this.physics.arcade.collide(player, player2)){
-    enemyPlayer.damage(1)
+    enemyPlayer.damage(5)
   // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
   this.player1AnimatedHealthBar()
   console.log(enemyPlayer.health)
@@ -691,18 +689,25 @@ addZeros: function(num) {
 
 
        if (player.alive === true && player2.alive === false){
+        finalScore = player.health * 10
+        this.printFinalScore(action[1].name.slice(0, 6))
          music.destroy()
          //get player score;
-         socket.emit("winner", { player: 1, score: 300 })
-         this.restartTextClick()
+         socket.emit("winner", { player: 1, score: finalScore })
+         this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
+         // this.restartTextClick()
          // console.log("The restart button", restartButton)
          // console.log("The restart button visibility --->", restartButton.visible)
          // this.game.state.restart()
        }
        else if (player.alive === false && player2.alive === true){
+                finalScore = player2.health * 10
+        // console.log(finalScore)
+          this.printFinalScore(action[2].name.slice(0, 6))
          music.destroy()
-         socket.emit("winner",  { player: 2, score: 400 })
-         this.restartTextClick()
+         socket.emit("winner",  { player: 2, score: finalScore })
+          this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
+         // this.restartTextClick()
          // restartButton.events.onInputDown.add(theListener, this)
          // console.log("The restart button", restartButton)
          // console.log("The restart button visibility --->", restartButton.visible)
@@ -827,13 +832,21 @@ addZeros: function(num) {
       },
 
       restartTextClick: function(){
-       restartText = this.game.add.text(380, 220, 'Click Here to Restart')
+       restartText = this.game.add.text(380, 300, 'Click Here to Restart')
        restartText.font = 'Press Start 2P'
        restartText.fontSize = 30
        restartText.addColor("#0000FF", 0);
        restartText.inputEnabled = true;
        restartText.events.onInputDown.add(this.theListener, this);
       },
+
+      printFinalScore: function(name){
+        finalScoreText = this.game.add.text(130, 240, `Winner:  ${name}  - Your score is ${finalScore}`)
+        finalScoreText.font = 'Press Start 2P'
+        finalScoreText.fontSize = 30
+        finalScoreText.addColor("#0000FF", 0);
+      },
+
 
       theListener: function() {
         this.game.state.restart();

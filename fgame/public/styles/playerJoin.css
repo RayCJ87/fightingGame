@@ -23,9 +23,13 @@
     padding-top: 5px;
   }
 
-  .game-title, .nameField, .emailField, #joinButton{
+  .game-title, .nameField, .nameNotice, .emailField, #joinButton{
     font-family: 'Gloria Hallelujah', cursive;
     font-size: 300%;
+  }
+
+  .nameNotice  {
+    font-size: 150%;
   }
 
   .inputArea {
@@ -58,7 +62,7 @@
 }
 
   .welcomePlayer{
-    padding-top: 50px;
+    padding-top: 40px;
     text-align: center;
   }
 
@@ -74,7 +78,11 @@
     padding-top: 5px;
   }
 
-  .game-title, .nameField, .emailField, #playButton, #joinButton{
+  .game-title, .nameField, #playButton, #joinButton{
+    font-family: 'Gloria Hallelujah', cursive;
+  }
+
+  .nameNotice {
     font-family: 'Gloria Hallelujah', cursive;
   }
 
