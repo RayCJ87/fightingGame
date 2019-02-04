@@ -14,11 +14,24 @@ var fire=false;
 var jump=false;
 var id = document.getElementById('userID').innerText;
 
-function preload() {
+WebFontConfig = {
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
 
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      // families: ['Revalia']
+      families: ['Press Start 2P']
+    }
+};
+
+function preload() {
+    game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js')
     game.load.spritesheet('buttonA', '/images/button-round-a.png',96,96);
     game.load.spritesheet('buttonB', '/images/button-round-b.png',96,96);
-
+    ;
 
 
     game.load.spritesheet('gamepad','/assets/gamepad_spritesheet.png', 100, 100);
@@ -39,6 +52,41 @@ function preload() {
 
 
     // create our virtual game controller buttons
+
+
+    // controller mark
+
+    if (id == 1){
+        controllerColor = game.add.text(650, 400, 'Red')
+        controllerColor.font = 'Press Start 2P'
+        controllerColor.addColor("#B22222", 0);
+        controllerColor.fontSize = 70
+    }
+    else if (id == 2) {
+        controllerColor = game.add.text(650, 400, 'Green')
+        controllerColor.font = 'Press Start 2P'
+        controllerColor.addColor("#228B22", 0);
+        controllerColor.fontSize = 70
+    }
+    else if (id == 3) {
+        controllerColor = game.add.text(650, 400, 'Blue')
+        controllerColor.font = 'Press Start 2P'
+        controllerColor.addColor("#00BFFF", 0);
+        controllerColor.fontSize = 70
+    }
+    else if (id == 4) {
+        controllerColor = game.add.text(650, 400, 'Yellow')
+        controllerColor.font = 'Press Start 2P'
+        controllerColor.addColor("#FFD700", 0);
+        controllerColor.fontSize = 70
+    }
+
+
+
+
+
+
+
 
     buttonB = game.add.button(1100, 300, 'buttonB', null, this, 0, 1, 0, 1);  //game, x, y, key, callback, callbackContext, overFrame, outFrame, downFrame, upFrame
     buttonB.fixedToCamera = true;  //our buttons should stay on the same place
