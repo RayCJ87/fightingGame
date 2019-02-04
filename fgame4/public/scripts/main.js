@@ -29,7 +29,7 @@ var winnerCheck = true;
 socket.on('userAction', function(data){
   // console.log("Game received action: ", data)
   action = data;
-  // console.log("the action : ---> ", action)
+  console.log("the action : ---> ", action)
 })
 
 WebFontConfig = {
@@ -122,8 +122,14 @@ preload: function(){
   this.game.load.image('bullet3', 'assets/fireball.png')
   this.game.load.image('bullet4', 'assets/fireball.png')
   // this.load.spritesheet('player','assets/player.png',24,26)
+
+  //p1
   this.load.spritesheet('player','assets/dino_red.png',24,24)
+
+  //p3
     this.load.spritesheet('player3','assets/dino_blue.png', 24, 24)
+
+    // p4
   this.load.spritesheet('player4','assets/dino_yellow.png', 24, 24)
   // this.load.spritesheet('player','assets/dino_red_flipped.png',24,24)
   this.load.spritesheet('test','assets/dino_green.png', 24, 24)
@@ -423,11 +429,11 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   var healthText2 = this.game.add.text(610, 20, `${action[3].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText2.fixedToCamera = true
 
-  var totalHealthBar3 = this.game.add.image(1000, 20, 'health_red')
+  var totalHealthBar3 = this.game.add.image(1040, 20, 'health_red')
   totalHealthBar3.fixedToCamera = true
-  currentHealthStatus3 = this.game.add.image(1000, 20, 'health_green')
+  currentHealthStatus3 = this.game.add.image(1040, 20, 'health_green')
   currentHealthStatus3.fixedToCamera = true
-  var healthText3 = this.game.add.text(910, 20, `${action[4].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
+  var healthText3 = this.game.add.text(950, 20, `${action[4].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText3.fixedToCamera = true
 
 
@@ -539,7 +545,7 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
   this.physics.arcade.overlap(player3, bullet2.bullets, this.playerHit3ByP2, null, this)
   this.physics.arcade.overlap(player3, bullet4.bullets, this.playerHit3ByP4, null, this)
 
-  this.physics.arcade.overlap(player4, bullet.bullets, this.playerHit3ByP1, null, this)
+  this.physics.arcade.overlap(player4, bullet.bullets, this.playerHit4ByP1, null, this)
   this.physics.arcade.overlap(player4, bullet2.bullets, this.playerHit4ByP2, null, this)
   this.physics.arcade.overlap(player4, bullet3.bullets, this.playerHit4ByP3, null, this)
 
@@ -586,16 +592,11 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
           player.scale.setTo(-4, 4);
            player.play('walking')
            bullet.fireAngle = Phaser.ANGLE_LEFT
-           // bullet.fireAngle = -90
-           //bullet.fireAngle = Phaser.ANGLE_UP
-           // bullet.fireAngle = 90
-           // action = '';
+
        }
 
       if (action[1].y < -50){
-       // player.body.velocity.y = -250;
-       // player.play('walking')
-       // bullet.fireAngle = Phaser.ANGLE_UP
+
 
          player.play('walking')
          let canJump1 = player.body.touching.down;
@@ -640,9 +641,6 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
          player2.play('walking2')
          bullet2.fireAngle = Phaser.ANGLE_LEFT
          // bullet.fireAngle = -90
-         //bullet.fireAngle = Phaser.ANGLE_UP
-         // bullet.fireAngle = 90
-         // action = '';
      }
 
     if (action[2].y < -50){
@@ -710,7 +708,7 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
 
 
     if (action[3].a == true){
-        player3.play('attack')
+        player3.play('attack3')
         this.playerMelee3(player)
 
      }
@@ -758,7 +756,7 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
 
 
     if (action[4].a == true){
-        player4.play('attack')
+        player4.play('attack4')
         this.playerMelee4(player)
 
      }
@@ -980,7 +978,7 @@ playerHit3ByP4: function(enemyPlayer, bullet){
 },
 
 //P1 attack --> P4 gets hit
-playerHit3ByP1: function(enemyPlayer, bullet){
+playerHit4ByP1: function(enemyPlayer, bullet){
   bullet.kill()
   // enemyPlayer.kill()
   enemyPlayer.damage(doDamage1)
@@ -1025,11 +1023,11 @@ player2AnimatedHealthBar: function(){
 
 //Added P3 and P4
 player3AnimatedHealthBar: function(){
-  currentHealthStatus.scale.setTo(player3.health / player3.maxHealth, 1)
+  currentHealthStatus2.scale.setTo(player3.health / player3.maxHealth, 1)
 },
 
 player4AnimatedHealthBar: function(){
-  currentHealthStatus.scale.setTo(player4.health / player4.maxHealth, 1)
+  currentHealthStatus3.scale.setTo(player4.health / player4.maxHealth, 1)
 },
 
 
@@ -1076,7 +1074,7 @@ addZeros: function(num) {
 
 
 
-       if (player.alive === true && player2.alive === false && winnerCheck){
+       if (player.alive === true && player2.alive === false && player3.alive === false && player4.alive === false && winnerCheck){
         finalScore = player.health * 10
         this.printFinalScore(action[1].name.slice(0, 6))
          music.destroy()
@@ -1090,7 +1088,7 @@ addZeros: function(num) {
          // console.log("The restart button visibility --->", restartButton.visible)
          // this.game.state.restart()
        }
-       else if (player.alive === false && player2.alive === true && winnerCheck){
+       else if (player.alive === false && player2.alive === true && player3.alive === false && player4.alive === false && winnerCheck){
                 finalScore = player2.health * 10
         // console.log(finalScore)
           this.printFinalScore(action[2].name.slice(0, 6))

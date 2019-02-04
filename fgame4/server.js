@@ -130,7 +130,15 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
               userAction['2'] = data[2];
               userAction['2']['name'] = playerList[1].name;
             }
-      if (Object.keys(userAction).length == 2 && userAction['2']) {
+      if (data[3]){
+        userAction['3'] = data[3];
+        userAction['3']['name'] = playerList[2].name;
+      }
+      if (data[4]){
+        userAction['4'] = data[4];
+        userAction['4']['name'] = playerList[3].name;
+      }
+      if (Object.keys(userAction).length == 4 && userAction['4']) {
 
 
         setTimeout(function(){
