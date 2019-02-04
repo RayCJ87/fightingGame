@@ -6,7 +6,7 @@ var app = express();
 var server = http.createServer(app);
 var PORT = 8080; // default port 8080
 var io = socketIO(server);
-var playerCounter = 0;
+var winnerCounter = 0;
 var playerList = [{}, {}, {}, {}];
 var userAction = {};
 const MongoClient = require("mongodb").MongoClient;
@@ -30,10 +30,12 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
   console.log(`successfully connected to DB: ${MONGODB_URI}`);
   var gameRecord = db.db("fgame")
 
-  gameRecord.createCollection('scoreRanking', function(err, res) {
+  gameRecord.createCollection('highRanking', function(err, res) {
   if (err) throw err;
     console.log("The collection created!");
   })
+
+  // gameRecord.collection('highRanking').insertOne({player: 'Saba', score: 400}, function(err, res){})
 
   // var newUpdate1 = { $set: {player: "Gary", score: 150}}
   // var newUpdate2 = { $set: {player: "Dan", score: 250}}
@@ -52,7 +54,7 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
 
   app.get("/welcome", (req, res) => {
     var rankRecord;
-    gameRecord.collection("scoreRanking").find({}).toArray(function(err, result) {
+    gameRecord.collection("highRanking").find({}).toArray(function(err, result) {
 
       if (err) throw err;
       rankRecord = result;
@@ -60,6 +62,7 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
         return b.score - a.score;
       })
 
+      console.log("The record here:  ", rankRecord)
       res.render('welcome', {rankRecord: rankRecord})
     })
     //ready to send the highscore data to the page
@@ -140,10 +143,11 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
       //db save record here
       console.log(playerList[data['player']-1].name)
       var scoreObj = {player: playerList[data['player'] -1 ].name, score: data['score']};
-      gameRecord.collection('scoreRanking').insertOne(scoreObj, function(err, res) {
-        if (err) throw err;
-        // console.log("player score saved")
-      })
+
+        gameRecord.collection('highRanking').insertOne(scoreObj, function(err, res) {
+          if (err) throw err;
+          console.log("player score saved")
+        })
 
       // gracefulShutDown()
     })

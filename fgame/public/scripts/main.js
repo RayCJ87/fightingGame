@@ -18,18 +18,13 @@ var totalPlayer = [player, player2]
 var doDamage1 = 5
 var doDamage2 = 5
 var finalScore = 0
+var winnerCheck = true;
 
 socket.on('userAction', function(data){
   // console.log("Game received action: ", data)
   action = data;
   // console.log("the action : ---> ", action)
 })
-
-// socket.on('user2', function(data){
-//   console.log("Game received action: ", data)
-//   action2 = data;
-//   console.log("the action : ---> ", action2)
-// })
 
 WebFontConfig = {
     //  'active' means all requested fonts have finished loading
@@ -165,31 +160,6 @@ create: function(){
    this.game.world.sendToBack(backgroundImage)
 
 
-  // this.game.add.sprite(1152,867, 'fifteen');
-  // this.game.add.sprite(1024,867, 'fifteen');
-  // this.game.add.sprite(896,867, 'fifteen');
-  // this.game.add.sprite(768,867, 'fifteen');
-  // this.game.add.sprite(640,867, 'fifteen');
-  // this.game.add.sprite(512,867, 'fifteen');
-  // this.game.add.sprite(384,867, 'fifteen');
-  // this.game.add.sprite(256,867, 'fifteen');
-  // this.game.add.sprite(128,867, 'fifteen');
-  // this.game.add.sprite(0,867, 'fifteen');
-
-
-  // this.game.add.sprite(1152,650, 'fifteen');
-  // this.game.add.sprite(1024,650, 'fifteen');
-  // this.game.add.sprite(896,650, 'fourteen');
-
-  // this.game.add.sprite(628,450, 'sixteen');
-  // this.game.add.sprite(500,450, 'fifteen');
-  // this.game.add.sprite(372,450, 'fourteen');
-
-  // this.game.add.sprite(900, 390, "tree")
-  // this.game.add.sprite(500, 900, "skeleton")
-  // this.game.add.sprite(100, 755, "cactus_one")
-
-
 
 var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   var platform2 = this.game.add.sprite(1024,867, 'fifteen');
@@ -201,14 +171,6 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   var platform8 = this.game.add.sprite(256,867, 'fifteen');
   var platform9 = this.game.add.sprite(128,867, 'fifteen');
   var platform10 = this.game.add.sprite(0,867, 'fifteen');
-
-  // var platform11 = this.game.add.sprite(1152,650, 'fifteen');
-  // var platform12 = this.game.add.sprite(1024,650, 'fifteen');
-  // var platform13 = this.game.add.sprite(896,650, 'fourteen');
-
-  // var platform14 = this.game.add.sprite(628,450, 'sixteen');
-  // var platform15 = this.game.add.sprite(500,450, 'fifteen');
-  // var platform16 = this.game.add.sprite(372,450, 'fourteen');
 
   var platformTwo1 = this.game.add.sprite(1152,650, 'fifteen');
   var platformTwo2 = this.game.add.sprite(1024,650, 'fourteen');
@@ -688,25 +650,28 @@ addZeros: function(num) {
 
 
 
-       if (player.alive === true && player2.alive === false){
+       if (player.alive === true && player2.alive === false && winnerCheck){
         finalScore = player.health * 10
         this.printFinalScore(action[1].name.slice(0, 6))
          music.destroy()
          //get player score;
+
          socket.emit("winner", { player: 1, score: finalScore })
          this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
+         winnerCheck = false;
          // this.restartTextClick()
          // console.log("The restart button", restartButton)
          // console.log("The restart button visibility --->", restartButton.visible)
          // this.game.state.restart()
        }
-       else if (player.alive === false && player2.alive === true){
+       else if (player.alive === false && player2.alive === true && winnerCheck){
                 finalScore = player2.health * 10
         // console.log(finalScore)
           this.printFinalScore(action[2].name.slice(0, 6))
-         music.destroy()
-         socket.emit("winner",  { player: 2, score: finalScore })
-          this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
+        music.destroy()
+        socket.emit("winner",  { player: 2, score: finalScore })
+        this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
+        winnerCheck = false;
          // this.restartTextClick()
          // restartButton.events.onInputDown.add(theListener, this)
          // console.log("The restart button", restartButton)
@@ -715,27 +680,27 @@ addZeros: function(num) {
        }
     },
 
-    handlePowerUpCollisions: function(){
-      if (this.physics.arcade.overlap(player, powerUp)){
+    // handlePowerUpCollisions: function(){
+    //   if (this.physics.arcade.overlap(player, powerUp)){
 
-          (player.health + 25) >100 ?  player.health=100: player.health += 25
+    //       (player.health + 25) >100 ?  player.health=100: player.health += 25
 
-         powerUp.destroy()
+    //      powerUp.destroy()
 
 
-        this.player2AnimatedHealthBar()
-        console.log(player.health)
-      }
-      if (this.physics.arcade.overlap(player2, powerUp)){
-           (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
+    //     this.player2AnimatedHealthBar()
+    //     console.log(player.health)
+    //   }
+    //   if (this.physics.arcade.overlap(player2, powerUp)){
+    //        (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
 
-         powerUp.destroy()
+    //      powerUp.destroy()
 
-        // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
-        this.player2AnimatedHealthBar()
-        console.log(player2.health)
-      }
-    },
+    //     // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+    //     this.player2AnimatedHealthBar()
+    //     console.log(player2.health)
+    //   }
+    // },
 
     handlePowerUpCollisions: function(){
        if (this.physics.arcade.overlap(player, powerUp)){
@@ -849,12 +814,9 @@ addZeros: function(num) {
 
 
       theListener: function() {
+        winnerCheck = true;
         this.game.state.restart();
       }
-
-
-
-
 }
 
 
