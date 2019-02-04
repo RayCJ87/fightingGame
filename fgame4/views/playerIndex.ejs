@@ -1,0 +1,45 @@
+<head>
+      <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+
+
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+
+    <!--Stylesheets -->
+    <link rel="stylesheet" href="/styles/playerJoin.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<!-- <img script src="/images/BG.png"></script> -->
+<section class="welcomePlayer">
+
+<h1 class="game-title">Dino Land</h1>
+<p>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" id="joinButton">
+    Join
+  </button>
+</p>
+<form method="POST" action="/register" id="playerRegister">
+    <div class="collapse" id="collapseExample">
+      <div class="playerForm">
+        <span class="nameField">name</span>   </br>
+        <input name="playerName" type="text" class="inputarea"/>
+          </br></br>
+        <span class="nameNotice">p.s.   Name no longer than 6 characters.</span>   </br>
+        <button class="btn btn-primary pink-background" id="playButton" type="submit" >
+         PLAY
+        </button>
+      </div>
+    </div>
+</form>
+</section>
+</body>

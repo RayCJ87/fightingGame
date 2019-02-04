@@ -1,0 +1,107 @@
+
+@media screen and (min-width: 1024px){
+  body{
+    background-image: url('/images/laptopLogin4.png');
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .welcomePlayer{
+    padding-top: 60px;
+    text-align: center;
+  }
+
+  #joinButton {
+    margin-top: 15px;
+    background-color: 00BFFF;
+    border-radius: 20px;
+    border-color: transparent;
+  }
+
+  .playerForm{
+    padding-top: 5px;
+  }
+
+  .game-title, .nameField, .nameNotice, .emailField, #joinButton{
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 300%;
+  }
+
+  .nameNotice  {
+    font-size: 150%;
+  }
+
+  .inputArea {
+   width: 200px;
+   border-radius: 5px;
+  }
+
+  #playButton {
+    margin-top: 180px;
+    font-family: 'Gloria Hallelujah', cursive;
+    font-size: 300%;
+    border-radius: 22px;
+    background-color: 00BFFF:
+  }
+
+  .pink-background {
+    background-color:F08080;
+    border-color: transparent;
+  }
+
+}
+
+@media all and (max-width: 800px) {
+  body {
+    flex-direction: column;
+  }
+
+  body {
+  background-image: url('/images/login3.png')
+}
+
+  .welcomePlayer{
+    padding-top: 40px;
+    text-align: center;
+  }
+
+  #joinButton {
+    margin-top: 10px;
+    font-size: 150%;
+    background-color: 00BFFF;
+    border-radius: 20px;
+    border-color: transparent;
+  }
+
+  .playerForm{
+    padding-top: 5px;
+  }
+
+  .game-title, .nameField, #playButton, #joinButton{
+    font-family: 'Gloria Hallelujah', cursive;
+  }
+
+  .nameNotice {
+    font-family: 'Gloria Hallelujah', cursive;
+  }
+
+  .inputArea {
+   width: 100px;
+   border-radius: 5px;
+  }
+
+  #playButton {
+    margin-top: 180px;
+    font-size: 200%;
+    border-radius: 22px;
+    background-color: 00BFFF:
+  }
+
+  .pink-background {
+    background-color:F08080;
+    border-color: transparent;
+  }
+
+
+}

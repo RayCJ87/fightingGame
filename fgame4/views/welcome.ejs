@@ -1,0 +1,70 @@
+<head>
+
+        <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+
+
+    <!-- font -->
+    <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts/gameStart.js"></script>
+
+    <link rel="stylesheet" href="/styles/gameWelcome.css" type="text/css" />
+</head>
+
+<body>
+
+<section class="welcomeGame">
+  <h1 class="game-title">Dino Land</h1>
+  <form methon="GET" action='/game' id="gameStart">
+    <button class="btn btn-primary pink-background" id="playButton" type="submit" >
+      Ready
+    </button>
+  </form>
+
+
+    <p>
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" id="rankButton">
+        High Score
+      </button>
+
+    </p>
+
+ <form  id="playerRanking">
+    <div class="collapse" id="collapseExample">
+      <div class="rankingContainer">
+        <table class=rankTable>
+          <% for (let i = 0; i < 5; i++) { %>
+          <tr class=theRow>
+            <td class=nameRow>Name:
+            </td>
+            <td class=theName>
+              <%= rankRecord[i]['player']%>
+            </td>
+            <td class=scoreRow>Score:
+            </td>
+            <td class=theScore>
+              <%= rankRecord[i]['score']%>
+            </td>
+          </tr>
+          <% } %>
+        </table>
+      </div>
+    </div>
+</form>
+
+
+</section>
+</body>
+
+
+
