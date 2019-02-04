@@ -4,6 +4,8 @@ var map;
 var layer;
 var player;
 var player2;
+var player3;
+var player4;
 var cursors;
 var currentHealthStatus;
 var currentHealthStatus1;
@@ -295,6 +297,9 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   // var shotsRemain = laser.fireLimit - laser.shots;
   // shotRemainText.text = 'Shots Left ' + shotsRemain;
   bullet2 = this.game.add.weapon(10, 'bullet')
+    bullet2 = this.game.add.weapon(10, 'bullet')
+  bullet3 = this.game.add.weapon(10, 'bullet')
+  bullet4 = this.game.add.weapon(10, 'bullet')
 
   bullet.bulletGravity.y = -3200;
   bullet2.bulletGravity.y = -3200;
@@ -302,6 +307,14 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   bullet2.bulletKillType = Phaser.Weapon.KILL_DISTANCE
   bullet.bulletKillDistance = 300
   bullet2.bulletKillDistance = 300
+
+    //Bullet 3 + 4
+  bullet3.bulletGravity.y = -3200;
+  bullet4.bulletGravity.y = -3200;
+  bullet3.bulletKillType = Phaser.Weapon.KILL_DISTANCE
+  bullet4.bulletKillType = Phaser.Weapon.KILL_DISTANCE
+  bullet3.bulletKillDistance = 300
+  bullet4.bulletKillDistance = 300
 
   player = this.add.sprite(550,830,'player', 9);//position of the player
   player.anchor.setTo(0.5,0.5);
@@ -340,6 +353,31 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   bullet2.trackSprite(player2);
   bullet2.bulletSpeed = 600
 
+    //Player 3 + 4
+  // this.physics.enable(player3, Phaser.Physics.ARCADE)
+  // this.physics.arcade.enable(player3);
+  // this.camera.follow(player3);
+  // player3.body.collideWorldBounds = true;
+
+  // this.physics.enable(player4, Phaser.Physics.ARCADE)
+  // this.physics.arcade.enable(player4);
+  // this.camera.follow(player4);
+  // player4.body.collideWorldBounds = true;
+
+  bullet.trackSprite(player);
+  bullet.bulletSpeed = 600
+  // bullet.fireLimit = 10
+  bullet2.trackSprite(player2);
+  bullet2.bulletSpeed = 600
+
+  //Player 3 + 4
+
+  bullet3.trackSprite(player3);
+  bullet3.bulletSpeed = 600
+  // bullet.fireLimit = 10
+  bullet4.trackSprite(player4);
+  bullet4.bulletSpeed = 600
+
   var totalHealthBar = this.game.add.image(600, 20, 'health_red')
   totalHealthBar.fixedToCamera = true
   currentHealthStatus = this.game.add.image(600, 20, 'health_green')
@@ -353,6 +391,21 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   currentHealthStatus1.fixedToCamera = true
   var healthText1 = this.game.add.text(110, 20, `${action[1].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText1.fixedToCamera = true
+
+    //Player 3 + 4
+  // var totalHealthBar2 = this.game.add.image(200, 20, 'health_red')
+  // totalHealthBar2.fixedToCamera = true
+  // currentHealthStatus2 = this.game.add.image(200, 20, 'health_green')
+  // currentHealthStatus2.fixedToCamera = true
+  // var healthText2 = this.game.add.text(110, 20, `${action[1].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
+  // healthText2.fixedToCamera = true
+
+  // var totalHealthBar3 = this.game.add.image(200, 20, 'health_red')
+  // totalHealthBar3.fixedToCamera = true
+  // currentHealthStatus3 = this.game.add.image(200, 20, 'health_green')
+  // currentHealthStatus3.fixedToCamera = true
+  // var healthText3 = this.game.add.text(110, 20, `${action[1].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
+  // healthText3.fixedToCamera = true
 
 
 
@@ -373,8 +426,16 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
 },
 
 
-
 update: function(){
+// PowerUp 1 Collision Detectors
+//Added detectors for P3 and P4
+ this.physics.arcade.collide(powerUp, groupPlatform)
+ this.physics.arcade.overlap(powerUp, player)
+ this.physics.arcade.overlap(powerUp, player2)
+  // this.physics.arcade.overlap(powerUp, player3)
+ // this.physics.arcade.overlap(powerUp, player4)
+ this.game.physics.enable(powerUp)
+
 
 //Barrel 1 to everything
  this.physics.arcade.collide(barrel_red, groupPlatform)
@@ -405,33 +466,36 @@ this.physics.arcade.collide(barrel_red, barrel_red2)
 this.physics.arcade.collide(barrel_red, barrel_red3)
 this.physics.arcade.collide(barrel_red2, barrel_red3)
 
+// PowerUp2 to All Barrels
+this.physics.arcade.collide(powerUp2, barrel_red)
+this.physics.arcade.collide(powerUp2, barrel_red2)
+this.physics.arcade.collide(powerUp2, barrel_red3)
 
-// PowerUp 1 Collision Detectors
- this.physics.arcade.collide(powerUp, groupPlatform)
- this.physics.arcade.overlap(powerUp, player)
- this.physics.arcade.overlap(powerUp, player2)
- this.game.physics.enable(powerUp)
 
  // Powerup 2 Collision Detectors
+ //Added detectors for P3 and P4
  this.physics.arcade.collide(powerUp2, groupPlatform)
  this.physics.arcade.overlap(powerUp2, player)
  this.physics.arcade.overlap(powerUp2, player2)
+ //  this.physics.arcade.overlap(powerUp2, player3)
+ // this.physics.arcade.overlap(powerUp2, player4)
  this.game.physics.enable(powerUp2)
 
   this.physics.arcade.collide(guns, groupPlatform)
   this.physics.arcade.overlap(guns, player)
   this.physics.arcade.overlap(guns, player2)
 
+  // this.physics.arcade.overlap(guns, player3)
+  // this.physics.arcade.overlap(guns, player4)
+
   this.aliveTest();
   this.handleCollisions();
   this.handlePlatformCollisions()
   // this.handlePlatformCollisions2()
-  // this.handlePowerUpCollisions()
+  this.handlePowerUpCollisions()
   this.handlePowerUpCollisions2()
   this.handleGunsCollisions()
   this.physics.arcade.collide(powerUp, groupPlatform)
-  this.physics.arcade.overlap(powerUp, player)
-  this.physics.arcade.overlap(powerUp, player2)
   // this.handleCollisions()
   // this.game.physics.arcade.collide(player, groupPlatform);
   // groupPlatform.body.immovable = true
@@ -573,6 +637,7 @@ this.physics.arcade.collide(barrel_red2, barrel_red3)
 
 handleCollisions: function(){
   this.game.physics.arcade.overlap(player, player2);
+  this.game.physics.arcade.overlap(player2, player);
 },
 
 handlePlatformCollisions: function(){
@@ -745,8 +810,7 @@ addZeros: function(num) {
     //     console.log(player2.health)
     //   }
     // },
-
-    handlePowerUpCollisions: function(){
+ handlePowerUpCollisions: function(){
        if (this.physics.arcade.overlap(player, powerUp)){
          (player.health + 25) >100 ?  player.health=100: player.health += 25
          powerUp.destroy()
@@ -766,6 +830,26 @@ addZeros: function(num) {
        //
        console.log(player2.health)
        }
+       // if (this.physics.arcade.overlap(player3, powerUp)){
+       //    (player3.health + 25) >100 ?  player3.health=100: player3.health += 25
+       //    powerUp.destroy()
+       //    this.printPowerUp()
+       // // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+       // //
+       // this.player3AnimatedHealthBar()
+       // //
+       // console.log(player3.health)
+       // }
+       // if (this.physics.arcade.overlap(player4, powerUp)){
+       //    (player4.health + 25) >100 ?  player4.health=100: player4.health += 25
+       //    powerUp.destroy()
+       //    this.printPowerUp()
+       // // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+       // //
+       // this.player4AnimatedHealthBar()
+       // //
+       // console.log(player4.health)
+       // }
       },
 
       handlePowerUpCollisions2: function(){
@@ -787,7 +871,27 @@ addZeros: function(num) {
           this.player2AnimatedHealthBar()
           console.log(player2.health)
           }
+          // if (this.physics.arcade.overlap(player3, powerUp2)){
+          //   (player3.health + 25) >100 ?  player3.health=100: player3.health += 25
+          //   powerUp2.destroy()
+          //   this.printPowerUp()
+
+          // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+          // this.player3AnimatedHealthBar()
+          // console.log(player3.health)
+          // }
+          // if (this.physics.arcade.overlap(player4, powerUp2)){
+          //   (player4.health + 25) >100 ?  player4.health=100: player4.health += 25
+          //   powerUp2.destroy()
+          //   this.printPowerUp()
+
+          // // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
+          // this.player4AnimatedHealthBar()
+          // console.log(player4.health)
+          // }
       },
+
+      // Added P3 and P4
 
       powerUpDrop: function(){
          powerUp = this.game.add.sprite(this.game.rnd.integerInRange(800, 1230), 10, "powerUp")
@@ -797,9 +901,12 @@ addZeros: function(num) {
          this.physics.arcade.collide(powerUp, groupPlatform)
          this.physics.arcade.overlap(powerUp, player)
          this.physics.arcade.overlap(powerUp, player2)
+         // this.physics.arcade.overlap(powerUp, player3)
+         // this.physics.arcade.overlap(powerUp, player4)
          this.game.physics.enable(powerUp)
         },
 
+    // Added P3 and P4
       powerUpDrop2: function(){
          powerUp2 = this.game.add.sprite(this.game.rnd.integerInRange(50, 800), 10, "powerUp2")
           // powerUp = this.game.add.sprite(850, 810, "powerUp")
@@ -808,9 +915,12 @@ addZeros: function(num) {
          this.physics.arcade.collide(powerUp2, groupPlatform)
          this.physics.arcade.overlap(powerUp2, player)
          this.physics.arcade.overlap(powerUp2, player2)
+         // this.physics.arcade.overlap(powerUp2, player3)
+         // this.physics.arcade.overlap(powerUp2, player4)
          this.game.physics.enable(powerUp2)
         },
 
+ // Added P3 and P4
       handleGunsCollisions: function(){
           if (this.physics.arcade.overlap(player, guns)){
             doDamage1 = 10
@@ -822,6 +932,16 @@ addZeros: function(num) {
            guns.destroy()
            this.printGun()
           }
+         // if (this.physics.arcade.overlap(player3, guns)){
+         //   doDamage3 = 10
+         //   guns.destroy()
+         //   this.printGun()
+         //  }
+         // if (this.physics.arcade.overlap(player4, guns)){
+         //   doDamage4 = 10
+         //   guns.destroy()
+         //   this.printGun()
+         //  }
         },
 
       printGun: function(){
