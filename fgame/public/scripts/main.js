@@ -52,7 +52,7 @@ init: function(){
   const enable_gravity = 3200;
   this.game.physics.arcade.gravity.y = enable_gravity;
 
-  this.game.physics.arcade.OVERLAP_BIAS = 20
+  this.game.physics.arcade.OVERLAP_BIAS = 100
 },
 
 render: function(){
