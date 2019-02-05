@@ -61,7 +61,7 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
         return b.score - a.score;
       })
 
-      // console.log("The record here:  ", rankRecord)
+      console.log("The record here:  ", rankRecord)
       res.render('welcome', {rankRecord: rankRecord})
     })
     //ready to send the highscore data to the page
