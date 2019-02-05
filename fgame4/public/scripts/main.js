@@ -33,11 +33,6 @@ socket.on('userAction', function(data){
 })
 
 WebFontConfig = {
-    //  'active' means all requested fonts have finished loading
-    //  We set a 1 second delay before calling 'createText'.
-    //  For some reason if we don't the browser cannot render the text the first time it's created.
-
-
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
       // families: ['Revalia']
@@ -111,10 +106,6 @@ preload: function(){
   this.game.load.image('stone', 'assets/stone.png');
   this.game.load.image('signArrow', 'assets/sign_arrow.png');
 
- // this.load.tilemap('level:1', 'assets/first_test_340pm.json');
-  // this.load.tilemap('map','assets/level1.csv');
-  // this.load.image('tileset','assets/tileset.png');
-
   this.game.load.image('guns', 'assets/edit_gun.png');
 
   this.game.load.image('bullet', 'assets/fireball.png')
@@ -142,8 +133,6 @@ preload: function(){
      this.game.load.image('barrel_red', 'assets/barrel_red.png')
    this.game.load.image('barrel_red2', 'assets/barrel_red.png')
    this.game.load.image('barrel_red3', 'assets/barrel_red.png')
-
-  this.game.load.image('explosion', 'assets/explosion.png')
 
   this.game.load.image('background','assets/BG.png');
 
@@ -230,28 +219,6 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   this.game.time.events.add(Phaser.Timer.SECOND * 1, this.powerUpDrop, this)
   this.game.time.events.add(Phaser.Timer.SECOND * 2, this.powerUpDrop2, this)
 
-//   this.physics.enable(platform1, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform2, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform3, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform4, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform5, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform6, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform7, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform8, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform9, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform10, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform11, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform12, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform13, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform14, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform15, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform16, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform17, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform18, Phaser.Physics.ARCADE)
-//   this.physics.enable(platform19, Phaser.Physics.ARCADE)
-
-
-
   groupPlatform.add(platform1)
   groupPlatform.add(platform2)
   groupPlatform.add(platform3)
@@ -262,12 +229,6 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   groupPlatform.add(platform8)
   groupPlatform.add(platform9)
   groupPlatform.add(platform10)
-  // groupPlatform.add(platform11)
-  // groupPlatform.add(platform12)
-  // groupPlatform.add(platform13)
-  // groupPlatform.add(platform14)
-  // groupPlatform.add(platform15)
-  // groupPlatform.add(platform16)
 
   groupPlatform.add(platformTwo1)
   groupPlatform.add(platformTwo2)
@@ -286,26 +247,8 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   groupPlatform.setAll('body.allowGravity', false)
   groupPlatform.setAll('body.immovable', true)
 
-
-
-
-  // this.loadLevel(this.game.cache.getJSON('level:1'));
-
-  // this.stage.backgroundColor = '#3A5963';
-
-  // map = this.add.tilemap('map',64,64);
-  // map.addTilesetImage('tileset');
-  // layer = map.createLayer(0);
-  // layer.resizeWorld();
-
-  // map.setCollisionBetween(0,2);
-
   bullet = this.game.add.weapon(10, 'bullet')
-  // bullet.fireLimit = 20
-  // var shotsRemain = laser.fireLimit - laser.shots;
-  // shotRemainText.text = 'Shots Left ' + shotsRemain;
   bullet2 = this.game.add.weapon(10, 'bullet')
-    bullet2 = this.game.add.weapon(10, 'bullet')
   bullet3 = this.game.add.weapon(10, 'bullet')
   bullet4 = this.game.add.weapon(10, 'bullet')
 
@@ -393,11 +336,6 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   this.camera.follow(player4);
   player4.body.collideWorldBounds = true;
 
-  bullet.trackSprite(player);
-  bullet.bulletSpeed = 600
-  // bullet.fireLimit = 10
-  bullet2.trackSprite(player2);
-  bullet2.bulletSpeed = 600
 
   //Player 3 + 4
 
@@ -437,20 +375,20 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   healthText3.fixedToCamera = true
 
 
+  //backup plan - using keyboard
 
-
-  cursors = this.input.keyboard.createCursorKeys()
-  aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A)
-  dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
-  sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S)
-  wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W)
+  // cursors = this.input.keyboard.createCursorKeys()
+  // aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A)
+  // dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+  // sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S)
+  // wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W)
 
 
   // spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
-  fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
-  fireButton2 = this.input.keyboard.addKey(Phaser.KeyCode.TILDE);
-  meleeButton = this.game.input.keyboard.addKey(Phaser.Keyboard.P)
-  meleeButton2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Q)
+  // fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+  // fireButton2 = this.input.keyboard.addKey(Phaser.KeyCode.TILDE);
+  // meleeButton = this.game.input.keyboard.addKey(Phaser.Keyboard.P)
+  // meleeButton2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Q)
 
 
 },
@@ -1009,14 +947,6 @@ player1AnimatedHealthBar: function(){
   currentHealthStatus1.scale.setTo(player.health / player.maxHealth, 1)
 },
 
-// player2AnimatedHealthBar: function(){
-//   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
-// },
-
-// player2AnimatedHealthBar: function(){
-//   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
-// },
-
 player2AnimatedHealthBar: function(){
   currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
 },
@@ -1030,45 +960,7 @@ player4AnimatedHealthBar: function(){
   currentHealthStatus3.scale.setTo(player4.health / player4.maxHealth, 1)
 },
 
-
-
-
-// tick: function() {
-//         //subtract a second
-//         this.timeInSeconds--;
-//         //find how many complete minutes are left
-//         var minutes = Math.floor(this.timeInSeconds / 60);
-//         //find the number of seconds left
-//         //not counting the minutes
-//         var seconds = this.timeInSeconds - (minutes * 60);
-
-//         //make a string showing the time
-//         var timeString = this.addZeros(minutes) + ":" + this.addZeros(seconds);
-//         //display the string in the text field
-//         this.timeText.text = timeString;
-//         //check if the time is up
-//         if (this.timeInSeconds == 0) {
-//             //remove the timer from the game
-//             this.game.time.events.remove(this.timer);
-//             //call your game over or other code here!
-//             this.timeText.text="Game Over";
-//             restartButton.visible = true;
-//             restartButton.events.onInputDown.addOnce(restartGame, this);
-
-//             // music.destroy();
-//             // this.game.state.restart()
-//         }
-//     },
-    /**
-     * add leading zeros to any number less than 10
-     * for example turn 1 to 01
-     */
-// addZeros: function(num) {
-//         if (num < 10) {
-//             num = "0" + num;
-//         }
-//         return num;
-//     },
+\
 
     aliveTest: function(){
 
@@ -1083,10 +975,6 @@ player4AnimatedHealthBar: function(){
          socket.emit("winner", { player: 1, score: finalScore })
          this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
          winnerCheck = false;
-         // this.restartTextClick()
-         // console.log("The restart button", restartButton)
-         // console.log("The restart button visibility --->", restartButton.visible)
-         // this.game.state.restart()
        }
        else if (player.alive === false && player2.alive === true && player3.alive === false && player4.alive === false && winnerCheck){
                 finalScore = player2.health * 10
@@ -1096,11 +984,6 @@ player4AnimatedHealthBar: function(){
         socket.emit("winner",  { player: 2, score: finalScore })
         this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
         winnerCheck = false;
-         // this.restartTextClick()
-         // restartButton.events.onInputDown.add(theListener, this)
-         // console.log("The restart button", restartButton)
-         // console.log("The restart button visibility --->", restartButton.visible)
-         // this.game.state.restart()
        }
        else if (player.alive === false && player2.alive === false && player3.alive === true && player4.alive === false && winnerCheck){
         finalScore = player3.health * 10
@@ -1110,10 +993,6 @@ player4AnimatedHealthBar: function(){
          socket.emit("winner", { player: 3, score: finalScore })
          this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
          winnerCheck = false;
-         // this.restartTextClick()
-         // console.log("The restart button", restartButton)
-         // console.log("The restart button visibility --->", restartButton.visible)
-         // this.game.state.restart()
        }
        else if (player.alive === false && player2.alive === false && player3.alive === false && player4.alive === true && winnerCheck){
         finalScore = player4.health * 10
@@ -1123,34 +1002,8 @@ player4AnimatedHealthBar: function(){
          socket.emit("winner", { player: 4, score: finalScore })
          this.game.time.events.add(Phaser.Timer.SECOND * 1, function(){this.restartTextClick()} ,this)
          winnerCheck = false;
-         // this.restartTextClick()
-         // console.log("The restart button", restartButton)
-         // console.log("The restart button visibility --->", restartButton.visible)
-         // this.game.state.restart()
        }
     },
-
-    // handlePowerUpCollisions: function(){
-    //   if (this.physics.arcade.overlap(player, powerUp)){
-
-    //       (player.health + 25) >100 ?  player.health=100: player.health += 25
-
-    //      powerUp.destroy()
-
-
-    //     this.player2AnimatedHealthBar()
-    //     console.log(player.health)
-    //   }
-    //   if (this.physics.arcade.overlap(player2, powerUp)){
-    //        (player2.health + 25) >100 ?  player2.health=100: player2.health += 25
-
-    //      powerUp.destroy()
-
-    //     // currentHealthStatus.scale.setTo(player2.health / player2.maxHealth, 1)
-    //     this.player2AnimatedHealthBar()
-    //     console.log(player2.health)
-    //   }
-    // },
  handlePowerUpCollisions: function(){
        if (this.physics.arcade.overlap(player, powerUp)){
          (player.health + 25) >100 ?  player.health=100: player.health += 25
