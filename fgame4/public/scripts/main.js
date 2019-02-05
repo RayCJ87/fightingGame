@@ -196,8 +196,8 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   var platformFour1 = this.game.add.sprite(478,150, 'sixteen');
   var platformFour2 = this.game.add.sprite(350,150, 'fourteen');
 
-  var platformFive1 = this.game.add.sprite(338,575, 'sixteen');
-  var platformFive2 = this.game.add.sprite(210,575, 'fourteen');
+  var platformFive1 = this.game.add.sprite(338,595, 'sixteen');
+  var platformFive2 = this.game.add.sprite(210,595, 'fourteen');
 
 
   this.game.add.sprite(1050, 390, "tree")
@@ -205,7 +205,7 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   // var skeleton2 = this.game.add.sprite(300, 105, "skeleton")
   this.game.add.sprite(600, 755, "cactus_one")
   // this.game.add.sprite(278, 400, "cactus_two")
-  this.game.add.sprite(250, 480, "cactus_three")
+  this.game.add.sprite(250, 500, "cactus_three")
   this.game.add.sprite(300, 780, "signArrow")
   stone = this.game.add.sprite(210, 815, "stone")
   stone.scale.setTo(0.75,0.75)
@@ -352,26 +352,26 @@ var platform1 = this.game.add.sprite(1152,867, 'fifteen');
   var healthText = this.game.add.text(10, 20, `${action[2].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText.fixedToCamera = true
 
-  var totalHealthBar1 = this.game.add.image(400, 20, 'health_red')
+  var totalHealthBar1 = this.game.add.image(425, 20, 'health_red')
   totalHealthBar1.fixedToCamera = true
-  currentHealthStatus1 = this.game.add.image(400, 20, 'health_green')
+  currentHealthStatus1 = this.game.add.image(425, 20, 'health_green')
   currentHealthStatus1.fixedToCamera = true
-  var healthText1 = this.game.add.text(310, 20, `${action[1].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
+  var healthText1 = this.game.add.text(335, 20, `${action[1].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText1.fixedToCamera = true
 
     //Player 3 + 4
-  var totalHealthBar2 = this.game.add.image(700, 20, 'health_red')
+  var totalHealthBar2 = this.game.add.image(750, 20, 'health_red')
   totalHealthBar2.fixedToCamera = true
-  currentHealthStatus2 = this.game.add.image(700, 20, 'health_green')
+  currentHealthStatus2 = this.game.add.image(750, 20, 'health_green')
   currentHealthStatus2.fixedToCamera = true
-  var healthText2 = this.game.add.text(610, 20, `${action[3].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
+  var healthText2 = this.game.add.text(660, 20, `${action[3].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText2.fixedToCamera = true
 
-  var totalHealthBar3 = this.game.add.image(1040, 20, 'health_red')
+  var totalHealthBar3 = this.game.add.image(1070, 20, 'health_red')
   totalHealthBar3.fixedToCamera = true
-  currentHealthStatus3 = this.game.add.image(1040, 20, 'health_green')
+  currentHealthStatus3 = this.game.add.image(1070, 20, 'health_green')
   currentHealthStatus3.fixedToCamera = true
-  var healthText3 = this.game.add.text(950, 20, `${action[4].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
+  var healthText3 = this.game.add.text(980, 20, `${action[4].name.slice(0, 6)}: `, {fontSize: '20px', fill: '#ffffff'})
   healthText3.fixedToCamera = true
 
 
@@ -514,7 +514,7 @@ this.physics.arcade.collide(powerUp2, barrel_red3)
 
 
 
-     if (action.hasOwnProperty(1)){
+     if (action.hasOwnProperty(1) ){
            console.log("x:  ", action[1].x)
      console.log("y:  ", action[1].y)
        if (action[1].x > 0){
@@ -960,14 +960,14 @@ player4AnimatedHealthBar: function(){
   currentHealthStatus3.scale.setTo(player4.health / player4.maxHealth, 1)
 },
 
-\
+
 
     aliveTest: function(){
 
 
 
        if (player.alive === true && player2.alive === false && player3.alive === false && player4.alive === false && winnerCheck){
-        finalScore = player.health * 10
+        finalScore = player.health * 15
         this.printFinalScore(action[1].name.slice(0, 6))
          music.destroy()
          //get player score;
@@ -977,7 +977,7 @@ player4AnimatedHealthBar: function(){
          winnerCheck = false;
        }
        else if (player.alive === false && player2.alive === true && player3.alive === false && player4.alive === false && winnerCheck){
-                finalScore = player2.health * 10
+                finalScore = player2.health * 15
         // console.log(finalScore)
           this.printFinalScore(action[2].name.slice(0, 6))
         music.destroy()
@@ -986,7 +986,7 @@ player4AnimatedHealthBar: function(){
         winnerCheck = false;
        }
        else if (player.alive === false && player2.alive === false && player3.alive === true && player4.alive === false && winnerCheck){
-        finalScore = player3.health * 10
+        finalScore = player3.health * 15
         this.printFinalScore(action[3].name.slice(0, 6))
          music.destroy()
          //get player score;
@@ -995,7 +995,7 @@ player4AnimatedHealthBar: function(){
          winnerCheck = false;
        }
        else if (player.alive === false && player2.alive === false && player3.alive === false && player4.alive === true && winnerCheck){
-        finalScore = player4.health * 10
+        finalScore = player4.health * 15
         this.printFinalScore(action[4].name.slice(0, 6))
          music.destroy()
          //get player score;

@@ -13,6 +13,10 @@ var duck= false;
 var fire=false;
 var jump=false;
 var id = document.getElementById('userID').innerText;
+var token = document.getElementById('token').innerText;
+
+console.log("The token for the controller: ", token);
+
 
 WebFontConfig = {
     //  'active' means all requested fonts have finished loading
@@ -128,6 +132,7 @@ var b = fire;
 userInput[id] = s;
 userInput[id]['a'] = a;
 userInput[id]['b'] = b;
+userInput[id]['token'] = token;
 socket.emit('userInput',userInput)
 
 

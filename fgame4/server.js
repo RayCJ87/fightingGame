@@ -7,10 +7,12 @@ var server = http.createServer(app);
 var PORT = 8080; // default port 8080
 var io = socketIO(server);
 var winnerCounter = 0;
-var playerList = [{}, {}, {}, {}];
+var playerCount = 1;
+var playerData = {};
 var userAction = {};
 const MongoClient = require("mongodb").MongoClient;
 const MONGODB_URI = "mongodb://localhost:27017/fgame";
+
 
 
 app.set("view engine", "ejs")
@@ -24,36 +26,28 @@ app.use(bodyParser.json())
 //Start the srever and db
 MongoClient.connect(MONGODB_URI, (err,db) => {
   if (err) {
-    console.error(`Failed to connect: ${MONGODB_URI}`);
+    // console.error(`Failed to connect: ${MONGODB_URI}`);
     throw err;
   }
-  console.log(`successfully connected to DB: ${MONGODB_URI}`);
+  // console.log(`successfully connected to DB: ${MONGODB_URI}`);
   var gameRecord = db.db("fgame")
 
   gameRecord.createCollection('highRanking', function(err, res) {
   if (err) throw err;
     console.log("The collection created!");
   })
-
-  // gameRecord.collection('highRanking').insertOne({player: 'Saba', score: 400}, function(err, res){})
-
-  // var newUpdate1 = { $set: {player: "Gary", score: 150}}
-  // var newUpdate2 = { $set: {player: "Dan", score: 250}}
-  // gameRecord.collection("scoreRanking").updateOne({player: 'Gary'}, newUpdate1, function (err, res) {
-  //   console.log("Gary updated");
-  // })
-  //   gameRecord.collection("scoreRanking").updateOne({player: 'Dan'}, newUpdate2, function (err, res) {
-  //   console.log("Dan updated");
-  // })
   // db.close();
   //routing starts here
   app.get("/", (req, res) => {
-    // res.send("Hello!");
+
     res.sendFile(__dirname+ '/views/index.html');
   });
 
+
+
   app.get("/newgame", (req, res) => {
-    playerList = [{}, {}, {}, {}];
+    playerData = {};
+    playerCount = 1;
     res.render('newgame');
   })
 
@@ -67,12 +61,13 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
         return b.score - a.score;
       })
 
-      console.log("The record here:  ", rankRecord)
+      // console.log("The record here:  ", rankRecord)
       res.render('welcome', {rankRecord: rankRecord})
     })
     //ready to send the highscore data to the page
-    // console.log("the rankRecord  ", rankRecord);
   });
+
+
 
   app.get("/game", (req, res) => {
     // res.send("Hello!");
@@ -83,63 +78,65 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
     res.render('playerIndex')
   })
 
+
   app.post("/register", (req, res) => {
     const theName = req.body.playerName;
-    const theMail = req.body.playerEmail;
     console.log(`The name is:   ${theName}`)
-    console.log(`The name is:   ${theMail}`)
-    for (let i = 0; i < playerList.length; i++){
-      if (!playerList[i]["name"]){
-        console.log("hellooooo");
-        playerList[i]["name"] = req.body.playerName;
-        playerList[i]["email"] = theMail;
-        res.redirect(`/controller/:${i+1}`);
-        break;
-      }
-      else if (playerList["name"] && (i == playerList.length - 1 )){
-        res.render('gameBusy');
-      }
+    const conToken = randomToken();
+    console.log("The id is : ", playerCount);
+    if (!playerData.hasOwnProperty(conToken)) {
+      playerData[conToken] = {}
+      playerData[conToken]['id'] = playerCount;
+      playerData[conToken]['name'] = req.body.playerName;
+      playerData[conToken]['token'] = conToken;
+      playerCount++;
+      res.redirect(`/controller/:${conToken}`);
     }
-    console.log("Total players:   ", playerList);
+     console.log("Total players:   ", playerData);
+
   })
 
-  app.get('/controller/:id', (req, res) => {
-    const theID = req.params.id.substring(1);
-    // console.log(typeof req.params.id);
-    console.log("the user", theID)
-    const tempVar = {id: theID}
-    res.render('controller', tempVar)
+  app.get('/controller/:conToken', (req, res) => {
+    const theToken = req.params.conToken.substring(1);
+    console.log("theToken:   ", theToken);
+    if (playerData[theToken]){
+        const theID = playerData[theToken]['id'];
+        console.log("the user", theID)
+        const tempVar = {id: theID, theToken: theToken};
+        console.log(" Total token is:", tempVar);
+        res.render('controller', tempVar)
+    }
+
   });
 
-  // app.get("/qrcode", (req, res)=> {
-  //   res.render('gameQrcode')
-  // })
 
   // Add the websocket handler
   io.on('connection', function(socket) {
 
 
-
+    if (winnerCounter == 0){
+      socket.emit('redirect', '/player');
+      // winnerCounter = 1;
+    }
 
     socket.on('userInput', function(data) {
-      if (data[1]){
+      if (data[1] && playerData.hasOwnProperty(data[1]['token'])){
         userAction['1'] = data[1];
-        userAction['1']['name'] = playerList[0].name;
+        userAction['1']['name'] = playerData[data[1]['token']].name;
       }
-      if (data[2]){
+      if (data[2] && playerData.hasOwnProperty(data[2]['token'])){
               userAction['2'] = data[2];
-              userAction['2']['name'] = playerList[1].name;
+              userAction['2']['name'] = playerData[data[2]['token']].name;
             }
-      if (data[3]){
+      if (data[3]  && playerData.hasOwnProperty(data[3]['token'])){
         userAction['3'] = data[3];
-        userAction['3']['name'] = playerList[2].name;
+        userAction['3']['name'] = playerData[data[3]['token']].name;
       }
-      if (data[4]){
+      if (data[4] && playerData.hasOwnProperty(data[4]['token'])){
         userAction['4'] = data[4];
-        userAction['4']['name'] = playerList[3].name;
+        userAction['4']['name'] = playerData[data[4]['token']].name;
       }
       if (Object.keys(userAction).length == 4 && userAction['4']) {
-
 
         setTimeout(function(){
           socket.broadcast.emit('userAction',  userAction )
@@ -154,17 +151,18 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
       // console.log("The winner is", data);
 
       //db save record here
-      console.log(playerList[data['player']-1].name)
-      var scoreObj = {player: playerList[data['player'] -1 ].name, score: data['score']};
-
-        gameRecord.collection('highRanking').insertOne(scoreObj, function(err, res) {
+      console.log(data['player'].name)
+      for (let i in playerData){
+        if (playerData[i]['id'] == data['player']){
+          var scoreObj = {player: playerData[i].name, score: data['score']};
+          gameRecord.collection('highRanking').insertOne(scoreObj, function(err, res) {
           if (err) throw err;
-          console.log("player score saved")
-        })
-
+            console.log("player score saved")
+          })
+        }
+      }
       // gracefulShutDown()
     })
-
   });
 
   server.listen(PORT, () => {
@@ -173,6 +171,17 @@ MongoClient.connect(MONGODB_URI, (err,db) => {
 
 });
 
+
+function randomToken() {
+  const randomKey = "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik9ol0pQAZWSXEDCRFVTGBYHNUJMIKOLP";
+  let output = "";
+  while (output.length < 4){
+
+  let temporaryNumber = Math.floor(Math.random() * (randomKey.length));
+  output+= randomKey[temporaryNumber];
+  }
+  return output;
+}
 
 
 function gracefulShutDown() {
